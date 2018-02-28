@@ -2,8 +2,7 @@ package PhoneBook;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PhoneBookTest {
     @Test
@@ -13,6 +12,12 @@ public class PhoneBookTest {
         book.newContact("Тепя", "8-523#");
         book.newContact("Sema", "8-5*3-1#");
         assertEquals("{8-523#=Тепя, 8-5*3-1#=Sema, +7-12#=Вася}", book.toString());
+        try {
+            book.newContact("Лена", "8-5---*3-1#");
+            fail("Exception expected");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Неверный формат номера!", e.getMessage());
+        }
     }
 
     @Test
