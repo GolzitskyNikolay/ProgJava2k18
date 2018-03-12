@@ -12,59 +12,82 @@ public class PhoneBook {
      * @param number - number of a contact.
      */
     public void newContactOrAddNumber(String person, String number) {
-        if (testOfNumber(number) && personIsCorrect(person)) phoneBookByNum.put(number, person);
+        if (numberIsCorrect(number) && personIsCorrect(person)) {
+            number = number.replace("-", "");
+            phoneBookByNum.put(number, person);
+        }
     }
 
     /**
-     * The number must match the following pattern:
-     * "+7" or "8" then "-". Then can be "*" or digit. At the end of the number must be "#".
-     * After each 3 symbols must be "-", except for the case where after 3 symbols is inserted "#".
-     * The number must contain at least 1 digit or "*".
-     * For example: +7-2*1-345# or 8-111-7# or 8-9#.
-     * @return true, if the number is correct and not null.
-     * @throws IllegalArgumentException if the format of the number isn't correct.
+     * Your number must have at least 1 digit. Before this digit,
+     * your number can contain a plus and a digit. Also you can use the special format of the number:
+     * "*"(1 or more digit)"#".
+     * @param number can't have a null.
+     * @return true, if number is a correct.
+     * @throws IllegalArgumentException if the format of the number isn't correct
+     * or other contact already has this number.
      */
-    private boolean testOfNumber(String number) {
-        if (numberIsCorrect(number) && phoneBookByNum.containsKey(number)) {
+    private boolean numberIsCorrect(String number) {
+        if (number == null || !number.matches(
+                "((\\+\\d)?(-)*\\d((\\d)*(-)*)*|(\\*)(-)*(\\d)((\\d)*(-)*)*(#))")) {
+            throw new IllegalArgumentException("Неверный формат номера!");
+        }
+        if (phoneBookByNum.containsKey(number)) {
             throw new IllegalArgumentException("Такой номер уже есть у другого контакта!");
         }
-        if (!number.matches("(\\+7|8)-((\\d|\\*)|(\\d|\\*){2}|(\\d|\\*){3})" +
-                "(-((\\d|\\*)|(\\d|\\*){2}|(\\d|\\*){3}))?#")) {
-            throw new IllegalArgumentException("Неверный формат номера!");
+        return true;
+    }
+
+    /**
+     * @param person can't have a null.
+     * @return true, if person is a correct.
+     * @throws IllegalArgumentException if the format of the contact isn't correct.
+     */
+    private boolean personIsCorrect(String person) {
+        if (person == null || person.matches(" *")) {
+            throw new IllegalArgumentException("Неверный формат имени контакта!");
         }
         return true;
     }
 
     /**
      * Delete the number of your contact.
+     * @return true, if number is deleted.
      */
-    public void deleteNumber(String number) {
-        phoneBookByNum.remove(number);
+    public boolean deleteNumber(String number) {
+        if (phoneBookByNum.containsKey(number)) {
+            phoneBookByNum.remove(number);
+            return true;
+        }
+        return false;
+
     }
 
     /**
      * Delete your contact.
+     * @return true, if person is deleted.
      */
-    public void deletePerson(String person) {
-        phoneBookByNum.entrySet().removeIf(entry -> entry.getValue().equals(person));
+    public boolean deletePerson(String person) {
+        if (phoneBookByNum.containsValue(person)) {
+            phoneBookByNum.entrySet().removeIf(entry -> entry.getValue().equals(person));
+            return true;
+        }
+        return false;
     }
 
     /**
      * Searching for your contact by number.
-     *
      * @return name of your contact.
      */
-    public String findPerson(String number) {
-        String result = null;
-        if (numberIsCorrect(number)) {
-            result = phoneBookByNum.get(number);
+    public Optional<String> findPerson(String number) {
+        if (phoneBookByNum.containsKey(number)) {
+            return Optional.ofNullable(phoneBookByNum.get(number));
         }
-        return result;
+        return Optional.empty();
     }
 
     /**
      * Searching for number(s) by name of your contact.
-     *
      * @return number(s) of your contact.
      */
     public ArrayList<String> findNumber(String person) {
@@ -72,33 +95,5 @@ public class PhoneBook {
         phoneBookByNum.entrySet().stream().filter(e -> e.getValue().
                 equals(person)).forEach(e -> numbers.add(e.getKey()));
         return numbers;
-    }
-
-    /**
-     * @param number can't have a null.
-     * @return true, if number is a correct.
-     */
-    private boolean numberIsCorrect(String number) {
-        if (number == null || number.matches(" *"))
-            throw new NullPointerException("Номер введён не корректно!");
-        return true;
-    }
-
-    /**
-     * @param person can't have a null.
-     * @return true, if person is a correct.
-     */
-    private boolean personIsCorrect(String person) {
-        if (person == null || person.matches(" *"))
-            throw new NullPointerException("Имя контакта введено не корректно!");
-        return true;
-    }
-
-    /**
-     * @return a string containing numbers and contact names.
-     */
-    @Override
-    public String toString() {
-        return phoneBookByNum.toString();
     }
 }
