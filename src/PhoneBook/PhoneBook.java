@@ -30,10 +30,10 @@ public class PhoneBook {
     private boolean numberIsCorrect(String number) {
         if (number == null || !number.matches(
                 "((\\+\\d)?(-)*\\d((\\d)*(-)*)*|(\\*)(-)*(\\d)((\\d)*(-)*)*(#))")) {
-            throw new IllegalArgumentException("Неверный формат номера!");
+            throw new IllegalArgumentException("Invalid number format!");
         }
         if (phoneBookByNum.containsKey(number)) {
-            throw new IllegalArgumentException("Такой номер уже есть у другого контакта!");
+            throw new IllegalArgumentException("This number already has another contact!");
         }
         return true;
     }
@@ -45,7 +45,7 @@ public class PhoneBook {
      */
     private boolean personIsCorrect(String person) {
         if (person == null || person.matches(" *")) {
-            throw new IllegalArgumentException("Неверный формат имени контакта!");
+            throw new IllegalArgumentException("Invalid contact name format!");
         }
         return true;
     }

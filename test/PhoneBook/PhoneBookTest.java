@@ -42,7 +42,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber("", "8-15987658-999");
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Неверный формат имени контакта!", e.getMessage());
+            assertEquals("Invalid contact name format!", e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber(null, "8-146745476");
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Неверный формат имени контакта!", e.getMessage());
+            assertEquals("Invalid contact name format!", e.getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber("Schaverma", "8-5---*3-1#");
             fail("Exception 1 expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Неверный формат номера!", e.getMessage());
+            assertEquals("Invalid number format!", e.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber("Mizim", "");
             fail("Exception 1 expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Неверный формат номера!", e.getMessage());
+            assertEquals("Invalid number format!", e.getMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber("Glicin", null);
             fail("Exception 1 expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Неверный формат номера!", e.getMessage());
+            assertEquals("Invalid number format!", e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class PhoneBookTest {
             book.newContactOrAddNumber("Korvalol", "809991");
             fail("Exception 2 expected");
         } catch (IllegalArgumentException e) {
-            assertEquals("Такой номер уже есть у другого контакта!", e.getMessage());
+            assertEquals("This number already has another contact!", e.getMessage());
         }
     }
 
