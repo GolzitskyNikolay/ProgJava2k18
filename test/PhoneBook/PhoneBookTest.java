@@ -1,8 +1,9 @@
 package PhoneBook;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,6 +16,23 @@ public class PhoneBookTest {
         book.newContactOrAddNumber("Вася", "*101#");
         assertEquals(book.findNumber("Вася").toString(), "[*100#, *101#]");
         assertEquals(book.findPerson("*100#").toString(), Optional.of("Вася").toString());
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> numberIsCorrect_Exception_DynamicTests() {
+        PhoneBook book = new PhoneBook();
+        book.newContactOrAddNumber("Джованни", "234567");
+        List<String> numbers = new ArrayList<>(Arrays.asList("88j", "99#", "*111111", null, "", " ", "234567"));
+        Collection<DynamicTest> dynamicTests = new ArrayList<>();
+        for (int i = 0; i < numbers.size(); i++) {
+            String num = numbers.get(i);
+            Executable exec = () -> assertThrows(IllegalArgumentException.class,
+                    () -> book.newContactOrAddNumber("name", num));
+            String testName = " Test " + num;
+            DynamicTest dTest = DynamicTest.dynamicTest(testName, exec);
+            dynamicTests.add(dTest);
+        }
+        return dynamicTests;
     }
 
     @Test
