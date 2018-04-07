@@ -38,7 +38,7 @@ class CutTest {
 
     @TestFactory
     Collection<DynamicTest> checkAndConvertRange_DynamicTest() {
-        List<String> listOfRanges = new ArrayList<>(Arrays.asList("1-4", "5-8", "1-56", "3-", "9", "6-6"));
+        List<String> listOfRanges = new ArrayList<>(Arrays.asList("1-4", "5-8", "1-56", "3-", "-9", "6-6"));
         String[] symbolsOrWordsInLine = {"1", "2", "3", "4", "5", "6"};
         List<List<Integer>> newRanges = new ArrayList<>(Arrays.asList((Arrays.asList(1, 4)), (Arrays.asList(5, 6)),
                 (Arrays.asList(1, 6)), (Arrays.asList(3)), (Arrays.asList(6)), (Arrays.asList(6, 6))));

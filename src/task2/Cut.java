@@ -8,15 +8,15 @@ public class Cut {
     /**
      * Selecting from each line of a text file a certain substring.
      *
-     * @param c - all numeric parameters specify indents in the characters of the input file.
-     * @param v - all numeric parameters specify indents in words of the input file.
+     * @param c              - all numeric parameters specify indents in the characters of the input file.
+     * @param v              - all numeric parameters specify indents in words of the input file.
+     * @param range          - specifies the output range.
      * @param inputFileName  - the name of the input file.
      * @param outputFileName - the name of the output file.
-     * @param range - specifies the output range;
      * @return cut expression.
      */
     public static List<String> cut(boolean c, boolean v, String outputFileName,
-                                           String range, String inputFileName) throws IOException {
+                                   String range, String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         if (v) {
             result = cutWords(range, inputFileName);
@@ -55,10 +55,9 @@ public class Cut {
         List<String> result = new ArrayList<>();
         List<Integer> newRange;
         List<String> listOfLines;
-        if (inputFileName == null){
+        if (inputFileName == null) {
             listOfLines = listOfConsoleLines();
-        }
-        else{
+        } else {
             listOfLines = listOfLinesOfInputFile(inputFileName);
         }
         for (String listOfLine : listOfLines) {
@@ -71,14 +70,14 @@ public class Cut {
 
     /**
      * @param arrayOfSymbolsOrWords - if you need to cut the characters, it takes an array of characters,
-     *                                if words, then takes an array of words.
+     *                              if words, then takes an array of words.
      * @return cut expression.
      */
     private static List<String> cutFromText(String[] arrayOfSymbolsOrWords, String range,
                                             List<Integer> newRange, boolean v) {
         StringBuilder string = new StringBuilder();
         List<String> cutExpression = new ArrayList<>();
-        if (range.matches("([1-9][0]*)+")) {
+        if (range.matches("-([1-9][0]*)+")) {
             for (int i = 0; i < newRange.get(0); i++) {
                 string.append(arrayOfSymbolsOrWords[i]);
                 if (v) {
@@ -131,6 +130,7 @@ public class Cut {
 
     /**
      * Adds each line from the input file to the new list.
+     *
      * @throws FileNotFoundException if file not found.
      */
     public static List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
@@ -153,10 +153,10 @@ public class Cut {
      */
     public static List<String> listOfWords(List<String> inputLines) {
         List<String> wordsInLines = new ArrayList<>();
-        for (String line: inputLines){
+        for (String line : inputLines) {
             wordsInLines.addAll(Arrays.asList(line.split(" +")));
-            for (String element: Arrays.asList(line.split(" +"))){
-                if (Objects.equals(element, "")){
+            for (String element : Arrays.asList(line.split(" +"))) {
+                if (Objects.equals(element, "")) {
                     wordsInLines.remove(element);
                 }
             }
@@ -184,8 +184,8 @@ public class Cut {
      */
     public static List<Integer> checkAndConvertRange(String range, String[] symbolsOrWordsInLine) {
         List<Integer> newRange = new ArrayList<>();
-        if (range.matches("([1-9][0]*)+")) {
-            newRange.add(Integer.parseInt(range.split("-")[0]));
+        if (range.matches("-([1-9][0]*)+")) {
+            newRange.add(Integer.parseInt(range.split("-")[1]));
             if (newRange.get(0) > symbolsOrWordsInLine.length) {
                 newRange.set(0, symbolsOrWordsInLine.length);
             }

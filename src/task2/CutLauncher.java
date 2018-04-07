@@ -1,7 +1,6 @@
 package task2;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 import org.kohsuke.args4j.*;
@@ -14,16 +13,16 @@ import org.kohsuke.args4j.*;
  *    -v             all numeric parameters specify indents in words of the input file.
  *    -o             specifies the name of the output file(If the name of the output file is not entered,
  *                   the result is output to the console).
+ *    -r             specifies the output range and has one of the following types(N and K are integers):
+ *                   -K range from the beginning of the line to K
+ *                   N- range from N to the end of the line
+ *                   N-K range from N to K.
  * <p>file           specifies the name of the input file(if the file name is not specified
  *                   or is incorrect, it reads the text from the console).
- * <p>range          specifies the output range and has one of the following types(N and K are integers):
- *                   K range from the beginning of the line to K
- *                   N- range from N to the end of the line
- *                   N-K range from N to K
  *
- * Must be specified at least one of the parameters "-c" or "-v" and range.
+ * Must be specified at least one of the parameters "-c" or "-v" and "-r".
  * Example:
- * -c -o nameOfOutputFile range file
+ * -c -o nameOfOutputFile -r range file
  */
 
 public class CutLauncher {
@@ -36,10 +35,10 @@ public class CutLauncher {
     @Option(name = "-o", metaVar = "NameOfOutputFile", usage = "Specifies the name of the output file")
     private String nameOfOutputFile;
 
-    @Argument(required = true, metaVar = "Range", index = 0, usage = "Sets the output range")
+    @Option(name = "-r", required = true, metaVar = "Range", usage = "Sets the output range" )
     private String range;
 
-    @Argument(metaVar = "InputName", index = 1, usage = "Input file name")
+    @Argument(metaVar = "InputName", usage = "Input file name")
     private String file;
 
     public static void main(String[] args) {
@@ -53,7 +52,7 @@ public class CutLauncher {
         } catch (CmdLineException e) {
             if (!indentsInWords && !indentsInCharacters) throw new NullPointerException("Write -c or -v");
             System.err.println(e.getMessage());
-            System.err.println("Expected arguments: [-c|-v] [-o outputFile] [range|-r] [inputName | inputText]");
+            System.err.println("Expected arguments: [-c|-v] [-o outputFile] -r range [inputName | inputText]");
             parser.printUsage(System.err);
             return;
         }
@@ -61,7 +60,7 @@ public class CutLauncher {
             List<String> result;
             if (file == null) {
                 result = Cut.cut(indentsInCharacters, indentsInWords,
-                        nameOfOutputFile, range,null);
+                        nameOfOutputFile, range, null);
             } else {
                 result = Cut.cut(indentsInCharacters, indentsInWords,
                         nameOfOutputFile, range, file);
