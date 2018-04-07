@@ -1,6 +1,7 @@
 package task2;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 import org.kohsuke.args4j.*;
@@ -52,7 +53,7 @@ public class CutLauncher {
         } catch (CmdLineException e) {
             if (!indentsInWords && !indentsInCharacters) throw new NullPointerException("Write -c or -v");
             System.err.println(e.getMessage());
-            System.err.println("Expected arguments: [-c|-null] [-o outputFile] range [inputName | inputText]");
+            System.err.println("Expected arguments: [-c|-v] [-o outputFile] [range|-r] [inputName | inputText]");
             parser.printUsage(System.err);
             return;
         }

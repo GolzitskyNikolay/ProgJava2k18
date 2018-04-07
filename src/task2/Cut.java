@@ -32,7 +32,7 @@ public class Cut {
     /**
      * @return cut words.
      */
-    private static List<String> cutWords(String range, String inputFileName) throws IOException {
+    public static List<String> cutWords(String range, String inputFileName) throws IOException {
         List<String> result;
         List<Integer> newRange;
         List<String> listOfLines;
@@ -51,7 +51,7 @@ public class Cut {
     /**
      * @return cut symbols.
      */
-    private static List<String> cutSymbols(String range, String inputFileName) throws IOException {
+    public static List<String> cutSymbols(String range, String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         List<Integer> newRange;
         List<String> listOfLines;
@@ -115,7 +115,7 @@ public class Cut {
     /**
      * Adds each line from the console to the new list.
      */
-    private static List<String> listOfConsoleLines() throws IOException {
+    public static List<String> listOfConsoleLines() throws IOException {
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Use a new line and write \"end\" to finish writing!");
@@ -133,7 +133,7 @@ public class Cut {
      * Adds each line from the input file to the new list.
      * @throws FileNotFoundException if file not found.
      */
-    private static List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
+    public static List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         File input = new File(inputFileName);
         if (!input.exists()) throw new FileNotFoundException("File not found!");
@@ -151,16 +151,23 @@ public class Cut {
      * @return list of words.
      * @throws IllegalArgumentException, if range isn't correct.
      */
-    private static List<String> listOfWords(List<String> inputLines) {
+    public static List<String> listOfWords(List<String> inputLines) {
         List<String> wordsInLines = new ArrayList<>();
-        inputLines.forEach(line -> wordsInLines.addAll(Arrays.asList(line.split(" +"))));
+        for (String line: inputLines){
+            wordsInLines.addAll(Arrays.asList(line.split(" +")));
+            for (String element: Arrays.asList(line.split(" +"))){
+                if (Objects.equals(element, "")){
+                    wordsInLines.remove(element);
+                }
+            }
+        }
         return wordsInLines;
     }
 
     /**
      * Create a new file.
      */
-    private static void outputFile(List<String> outputFile, String outputName) throws IOException {
+    public static boolean outputFile(List<String> outputFile, String outputName) throws IOException {
         int i = outputFile.size() - 1;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output\\task2\\" + outputName))) {
             for (int j = 0; j <= i; j++) {
@@ -168,6 +175,7 @@ public class Cut {
                 writer.newLine();
             }
         }
+        return true;
     }
 
     /**
