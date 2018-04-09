@@ -9,6 +9,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CutTest {
+    private Cut object = new Cut();
 
     @TestFactory
     Collection<DynamicTest> checkAndConvertRange_IllegalRange() {
@@ -17,7 +18,7 @@ class CutTest {
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (String range : listOfRanges) {
             Executable exec = () -> assertThrows(IllegalArgumentException.class,
-                    () -> Cut.checkAndConvertRange(range, symbolsOrWordsInLine));
+                    () -> object.checkAndConvertRange(range, symbolsOrWordsInLine));
             DynamicTest dTest = DynamicTest.dynamicTest(range, exec);
             dynamicTests.add(dTest);
         }
@@ -29,7 +30,7 @@ class CutTest {
         String range = "4-1";
         String[] symbolsOrWordsInLine = {"1 2 3 4 5 6"};
         try {
-            Cut.checkAndConvertRange(range, symbolsOrWordsInLine);
+            object.checkAndConvertRange(range, symbolsOrWordsInLine);
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
             assertEquals("Range isn't correct", e.getMessage());
@@ -38,15 +39,16 @@ class CutTest {
 
     @TestFactory
     Collection<DynamicTest> checkAndConvertRange_DynamicTest() {
-        List<String> listOfRanges = new ArrayList<>(Arrays.asList("1-4", "5-8", "1-56", "3-", "-9", "6-6"));
+        List<String> listOfRanges = new ArrayList<>(Arrays.asList("1-4", "5-8", "1-56", "3-", "-9", "6-6", "-48"));
         String[] symbolsOrWordsInLine = {"1", "2", "3", "4", "5", "6"};
         List<List<Integer>> newRanges = new ArrayList<>(Arrays.asList((Arrays.asList(1, 4)), (Arrays.asList(5, 6)),
-                (Arrays.asList(1, 6)), (Arrays.asList(3)), (Arrays.asList(6)), (Arrays.asList(6, 6))));
+                (Arrays.asList(1, 6)), (Arrays.asList(3)), (Arrays.asList(6)), (Arrays.asList(6, 6))
+                , (Arrays.asList(6))));
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (int i = 0; i < listOfRanges.size(); i++) {
             String range = listOfRanges.get(i);
             List<Integer> newRange = newRanges.get(i);
-            Executable exec = () -> assertEquals(newRange, Cut.checkAndConvertRange(range, symbolsOrWordsInLine));
+            Executable exec = () -> assertEquals(newRange, object.checkAndConvertRange(range, symbolsOrWordsInLine));
             DynamicTest dTest = DynamicTest.dynamicTest(range, exec);
             dynamicTests.add(dTest);
         }
@@ -57,16 +59,17 @@ class CutTest {
     void listOfWords() {
         List<String> listOfLines = new ArrayList<>(Arrays.asList("Что-то  " +
                 "  пошло  не так", "пересчитайте", "   и тогда всё норм", "  -  написал    Гоша"));
-        List<String> words = new ArrayList<>(Arrays.asList("Что-то", "пошло", "не", "так",
-                "пересчитайте", "и", "тогда", "всё", "норм", "-", "написал", "Гоша"));
-        assertEquals(Cut.listOfWords(listOfLines), words);
+        List<List<String>> words = new ArrayList<>(Arrays.asList(Arrays.asList("Что-то", "пошло", "не", "так"),
+                Arrays.asList("пересчитайте"), Arrays.asList("и", "тогда", "всё", "норм"),
+                Arrays.asList("-", "написал", "Гоша")));
+        assertEquals(object.listOfWords(listOfLines), words);
     }
 
     @Test
     void listOfLinesOfInputFile_FileDoesntExist() throws IOException {
         String inputFileName = "Мой зачёт";
         try {
-            Cut.listOfLinesOfInputFile(inputFileName);
+            object.listOfLinesOfInputFile(inputFileName);
             fail("Exception expected");
         } catch (IOException e) {
             assertEquals("File not found!", e.getMessage());
@@ -80,7 +83,7 @@ class CutTest {
                 "правой клавиатуре, басами и готовым (аккордовым) или готово-выборным", "",
                 "    аккомпанементом на левой."));
         String inputFileName = "input\\task2\\for_task2";
-        assertEquals(Cut.listOfLinesOfInputFile(inputFileName), lines);
+        assertEquals(object.listOfLinesOfInputFile(inputFileName), lines);
     }
 
     @Test
@@ -90,7 +93,7 @@ class CutTest {
         text.add("Мама");
         text.add("мыла");
         text.add("Рому");
-        assertEquals(Cut.outputFile(text, outputName), true);
+        assertEquals(object.outputFile(text, outputName), true);
     }
 
     @Test
@@ -99,14 +102,24 @@ class CutTest {
         String inputFileName = "input\\task2\\for_task2";
         List<String> cutExpression = new ArrayList<>(Arrays.asList("[моника]",
                 "[й музыкальный инструмент с]", "[м на]", "[вым (аккордовым) или готово-выборным]", "[]", "[]"));
-        assertEquals(cutExpression, Cut.cutSymbols(range, inputFileName));
+        assertEquals(cutExpression, object.cutSymbols(range, inputFileName));
     }
 
     @Test
-    void cutWords() throws IOException {
-        String range = "1-5";
+    void cutWords_1() throws IOException {
+        String range = "1-2";
         String inputFileName = "input\\task2\\for_task2";
-        List<String> cutExpression = new ArrayList<>(Arrays.asList("Баян - русская хроматическая гармоника "));
-        assertEquals(cutExpression, Cut.cutWords(range, inputFileName));
+        List<String> cutExpression = new ArrayList<>(Arrays.asList("[Баян - ]", "[язычковый кнопочно-пневматический ]",
+                "[полным хроматическим ]", "[правой клавиатуре, ]", "[]", "[аккомпанементом на ]"));
+        assertEquals(cutExpression, object.cutWords(range, inputFileName));
+    }
+
+    @Test
+    void cutWords_2() throws IOException {
+        String range = "-1";
+        String inputFileName = "input\\task2\\for_task2";
+        List<String> cutExpression = new ArrayList<>(Arrays.asList("[Баян ]", "[язычковый ]", "[полным ]", "[правой ]",
+                "[]", "[аккомпанементом ]"));
+        assertEquals(cutExpression, object.cutWords(range, inputFileName));
     }
 }

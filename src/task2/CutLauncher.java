@@ -57,12 +57,13 @@ public class CutLauncher {
             return;
         }
         try {
+            Cut object = new Cut();
             List<String> result;
             if (file == null) {
-                result = Cut.cut(indentsInCharacters, indentsInWords,
+                result = object.cut(indentsInCharacters, indentsInWords,
                         nameOfOutputFile, range, null);
             } else {
-                result = Cut.cut(indentsInCharacters, indentsInWords,
+                result = object.cut(indentsInCharacters, indentsInWords,
                         nameOfOutputFile, range, file);
             }
             for (String line : result) {

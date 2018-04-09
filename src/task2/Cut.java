@@ -5,6 +5,7 @@ import java.util.*;
 
 
 public class Cut {
+
     /**
      * Selecting from each line of a text file a certain substring.
      *
@@ -15,7 +16,7 @@ public class Cut {
      * @param outputFileName - the name of the output file.
      * @return cut expression.
      */
-    public static List<String> cut(boolean c, boolean v, String outputFileName,
+    public List<String> cut(boolean c, boolean v, String outputFileName,
                                    String range, String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         if (v) {
@@ -32,8 +33,8 @@ public class Cut {
     /**
      * @return cut words.
      */
-    public static List<String> cutWords(String range, String inputFileName) throws IOException {
-        List<String> result;
+    public List<String> cutWords(String range, String inputFileName) throws IOException {
+        List<String> result = new ArrayList<>();
         List<Integer> newRange;
         List<String> listOfLines;
         if (inputFileName == null) {
@@ -41,17 +42,19 @@ public class Cut {
         } else {
             listOfLines = listOfLinesOfInputFile(inputFileName);
         }
-        int size = listOfWords(listOfLines).size();
-        String[] words = listOfWords(listOfLines).toArray(new String[size]);
-        newRange = checkAndConvertRange(range, words);
-        result = cutFromText(words, range, newRange, true);
+        for (int i = 0; i < listOfWords(listOfLines).size(); i++) {
+            int size = listOfWords(listOfLines).get(i).size();
+            String[] words = listOfWords(listOfLines).get(i).toArray(new String[size]);
+            newRange = checkAndConvertRange(range, words);
+            result.add(String.valueOf(cutFromText(words, range, newRange, true)));
+        }
         return result;
     }
 
     /**
      * @return cut symbols.
      */
-    public static List<String> cutSymbols(String range, String inputFileName) throws IOException {
+    public List<String> cutSymbols(String range, String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         List<Integer> newRange;
         List<String> listOfLines;
@@ -73,7 +76,7 @@ public class Cut {
      *                              if words, then takes an array of words.
      * @return cut expression.
      */
-    private static List<String> cutFromText(String[] arrayOfSymbolsOrWords, String range,
+    private List<String> cutFromText(String[] arrayOfSymbolsOrWords, String range,
                                             List<Integer> newRange, boolean v) {
         StringBuilder string = new StringBuilder();
         List<String> cutExpression = new ArrayList<>();
@@ -114,7 +117,7 @@ public class Cut {
     /**
      * Adds each line from the console to the new list.
      */
-    public static List<String> listOfConsoleLines() throws IOException {
+    public List<String> listOfConsoleLines() throws IOException {
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Use a new line and write \"end\" to finish writing!");
@@ -133,7 +136,7 @@ public class Cut {
      *
      * @throws FileNotFoundException if file not found.
      */
-    public static List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
+    public List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
         List<String> result = new ArrayList<>();
         File input = new File(inputFileName);
         if (!input.exists()) throw new FileNotFoundException("File not found!");
@@ -151,23 +154,26 @@ public class Cut {
      * @return list of words.
      * @throws IllegalArgumentException, if range isn't correct.
      */
-    public static List<String> listOfWords(List<String> inputLines) {
-        List<String> wordsInLines = new ArrayList<>();
+    public List<List<String>> listOfWords(List<String> inputLines) {
+        List<List<String>> words = new ArrayList<>();
+        List<String> wordsInLine = new ArrayList<>();
         for (String line : inputLines) {
-            wordsInLines.addAll(Arrays.asList(line.split(" +")));
+            wordsInLine.addAll(Arrays.asList(line.split(" +")));
             for (String element : Arrays.asList(line.split(" +"))) {
                 if (Objects.equals(element, "")) {
-                    wordsInLines.remove(element);
+                    wordsInLine.remove(element);
                 }
             }
+            words.add(new ArrayList<>(wordsInLine));
+            wordsInLine.clear();
         }
-        return wordsInLines;
+        return words;
     }
 
     /**
      * Create a new file.
      */
-    public static boolean outputFile(List<String> outputFile, String outputName) throws IOException {
+    public boolean outputFile(List<String> outputFile, String outputName) throws IOException {
         int i = outputFile.size() - 1;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("output\\task2\\" + outputName))) {
             for (int j = 0; j <= i; j++) {
@@ -182,7 +188,7 @@ public class Cut {
      * @return the list, that has numbers of range.
      * @throws IllegalArgumentException if range isn't correct.
      */
-    public static List<Integer> checkAndConvertRange(String range, String[] symbolsOrWordsInLine) {
+    public List<Integer> checkAndConvertRange(String range, String[] symbolsOrWordsInLine) {
         List<Integer> newRange = new ArrayList<>();
         if (range.matches("-([1-9][0]*)+")) {
             newRange.add(Integer.parseInt(range.split("-")[1]));
