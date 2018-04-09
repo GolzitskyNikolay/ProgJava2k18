@@ -1,6 +1,7 @@
 package task2;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kohsuke.args4j.*;
@@ -17,7 +18,7 @@ import org.kohsuke.args4j.*;
  *                   -K range from the beginning of the line to K
  *                   N- range from N to the end of the line
  *                   N-K range from N to K.
- * <p>file           specifies the name of the input file(if the file name is not specified
+ *    <p>file        specifies the name of the input file(if the file name is not specified
  *                   or is incorrect, it reads the text from the console).
  *
  * Must be specified at least one of the parameters "-c" or "-v" and "-r".
@@ -35,7 +36,7 @@ public class CutLauncher {
     @Option(name = "-o", metaVar = "NameOfOutputFile", usage = "Specifies the name of the output file")
     private String nameOfOutputFile;
 
-    @Option(name = "-r", required = true, metaVar = "Range", usage = "Sets the output range" )
+    @Option(name = "-r", required = true, metaVar = "Range", usage = "Sets the output range")
     private String range;
 
     @Argument(metaVar = "InputName", usage = "Input file name")
@@ -58,13 +59,14 @@ public class CutLauncher {
         }
         try {
             Cut object = new Cut();
-            List<String> result;
-            if (file == null) {
-                result = object.cut(indentsInCharacters, indentsInWords,
-                        nameOfOutputFile, range, null);
-            } else {
-                result = object.cut(indentsInCharacters, indentsInWords,
-                        nameOfOutputFile, range, file);
+            List<String> result = new ArrayList<>();
+            if (indentsInWords) {
+                result = object.cutWords(range, file);
+            } else if (indentsInCharacters) {
+                result = object.cutSymbols(range, file);
+            }
+            if (nameOfOutputFile != null) {
+                object.outputFile(result, nameOfOutputFile);
             }
             for (String line : result) {
                 System.out.println(line);

@@ -3,34 +3,10 @@ package task2;
 import java.io.*;
 import java.util.*;
 
-
 public class Cut {
-
     /**
-     * Selecting from each line of a text file a certain substring.
-     *
-     * @param c              - all numeric parameters specify indents in the characters of the input file.
-     * @param v              - all numeric parameters specify indents in words of the input file.
-     * @param range          - specifies the output range.
-     * @param inputFileName  - the name of the input file.
-     * @param outputFileName - the name of the output file.
-     * @return cut expression.
-     */
-    public List<String> cut(boolean c, boolean v, String outputFileName,
-                                   String range, String inputFileName) throws IOException {
-        List<String> result = new ArrayList<>();
-        if (v) {
-            result = cutWords(range, inputFileName);
-        } else if (c) {
-            result = cutSymbols(range, inputFileName);
-        }
-        if (outputFileName != null) {
-            outputFile(result, outputFileName);
-        }
-        return result;
-    }
-
-    /**
+     * @param inputFileName - the name of the input file.
+     * @param range - specifies the output range.
      * @return cut words.
      */
     public List<String> cutWords(String range, String inputFileName) throws IOException {
@@ -73,11 +49,12 @@ public class Cut {
 
     /**
      * @param arrayOfSymbolsOrWords - if you need to cut the characters, it takes an array of characters,
-     *                              if words, then takes an array of words.
+     * if words, then takes an array of words.
+     * @param v - all numeric parameters specify indents in words of the input file.
      * @return cut expression.
      */
     private List<String> cutFromText(String[] arrayOfSymbolsOrWords, String range,
-                                            List<Integer> newRange, boolean v) {
+                                     List<Integer> newRange, boolean v) {
         StringBuilder string = new StringBuilder();
         List<String> cutExpression = new ArrayList<>();
         if (range.matches("-([1-9][0]*)+")) {
@@ -117,7 +94,7 @@ public class Cut {
     /**
      * Adds each line from the console to the new list.
      */
-    public List<String> listOfConsoleLines() throws IOException {
+    private List<String> listOfConsoleLines() throws IOException {
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Use a new line and write \"end\" to finish writing!");
@@ -133,7 +110,6 @@ public class Cut {
 
     /**
      * Adds each line from the input file to the new list.
-     *
      * @throws FileNotFoundException if file not found.
      */
     public List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
@@ -172,6 +148,7 @@ public class Cut {
 
     /**
      * Create a new file.
+     * @param outputName - the name of the output file.
      */
     public boolean outputFile(List<String> outputFile, String outputName) throws IOException {
         int i = outputFile.size() - 1;
