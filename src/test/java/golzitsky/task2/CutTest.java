@@ -14,11 +14,11 @@ class CutTest {
     @TestFactory
     Collection<DynamicTest> checkAndConvertRange_IllegalRange() {
         List<String> listOfRanges = new ArrayList<>(Arrays.asList("2-1", "56-32", "12-*", "Bayan one love"));
-        String[] symbolsOrWordsInLine = {"1 2 3 4 5 6"};
+        List<String> symbolsOrWordsInLine = new ArrayList<>(Arrays.asList("1 2 3 4 5 6"));
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (String range : listOfRanges) {
             Executable exec = () -> assertThrows(IllegalArgumentException.class,
-                    () -> object.checkAndConvertRange(range, symbolsOrWordsInLine));
+                    () -> object.checkAndConvertRange(range, symbolsOrWordsInLine,true));
             DynamicTest dTest = DynamicTest.dynamicTest(range, exec);
             dynamicTests.add(dTest);
         }
@@ -28,9 +28,9 @@ class CutTest {
     @Test
     void checkAndConvertRange_Exception() {
         String range = "4-1";
-        String[] symbolsOrWordsInLine = {"1 2 3 4 5 6"};
+        List<String> symbolsOrWordsInLine = new ArrayList<>(Arrays.asList("1 2 3 4 5 6"));
         try {
-            object.checkAndConvertRange(range, symbolsOrWordsInLine);
+            object.checkAndConvertRange(range, symbolsOrWordsInLine,true);
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
             assertEquals("Invalid range: [4‥1]", e.getMessage());
@@ -40,14 +40,14 @@ class CutTest {
     @TestFactory
     Collection<DynamicTest> checkAndConvertRange_DynamicTest() {
         List<String> listOfRanges = new ArrayList<>(Arrays.asList("1-4", "5-8", "1-56", "3-", "-9", "6-6", "-48"));
-        String[] symbolsOrWordsInLine = {"1", "2", "3", "4", "5", "6"};
+        List<String> symbolsOrWordsInLine = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6"));
         String[] newRanges = {"[1‥4]","[5‥6]","[1‥6]","[3‥6]","[0‥6]","[6‥6]","[0‥6]"};
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (int i = 0; i < listOfRanges.size(); i++) {
             String range = listOfRanges.get(i);
             Object newRange = newRanges[i];
             Executable exec = () -> assertEquals(newRange,
-                    object.checkAndConvertRange(range, symbolsOrWordsInLine).toString());
+                    object.checkAndConvertRange(range, symbolsOrWordsInLine,true).toString());
             DynamicTest dTest = DynamicTest.dynamicTest(range, exec);
             dynamicTests.add(dTest);
         }
@@ -56,19 +56,16 @@ class CutTest {
 
     @Test
     void listOfWords() {
-        List<String> listOfLines = new ArrayList<>(Arrays.asList("Что-то  " +
-                "  пошло  не так", "пересчитайте", "   и тогда всё норм", "  -  написал    Гоша"));
-        List<List<String>> words = new ArrayList<>(Arrays.asList(Arrays.asList("Что-то", "пошло", "не", "так"),
-                Arrays.asList("пересчитайте"), Arrays.asList("и", "тогда", "всё", "норм"),
-                Arrays.asList("-", "написал", "Гоша")));
-        assertEquals(object.listOfWords(listOfLines), words);
+        List<String> listOfWords = new ArrayList<>(Arrays.asList("123","234","567"));
+        String line = " 123 234 567 ";
+        assertEquals(object.listOfWords(line), listOfWords);
     }
 
     @Test
-    void listOfLinesOfInputFile_FileDoesntExist() throws IOException {
+    void fileDoesntExist() throws IOException {
         String inputFileName = "Мой зачёт";
         try {
-            object.listOfLinesOfInputFile(inputFileName);
+            object.cutFromInputFile(inputFileName,true,"2-4");
             fail("Exception expected");
         } catch (IOException e) {
             assertEquals("File not found!", e.getMessage());
@@ -76,24 +73,14 @@ class CutTest {
     }
 
     @Test
-    void listOfLinesOfInputFile() throws IOException {
-        List<String> lines = new ArrayList<>(Arrays.asList("Баян - русская хроматическая гармоника",
-                "язычковый кнопочно-пневматический музыкальный инструмент с", "  полным хроматическим звукорядом на",
-                "правой клавиатуре, басами и готовым (аккордовым) или готово-выборным", "",
-                "    аккомпанементом на левой."));
-        String inputFileName = "src\\test\\resources\\for_task2";
-        assertEquals(object.listOfLinesOfInputFile(inputFileName), lines);
-    }
-
-    @Test
     void outputFile() throws IOException {
         String outputName = "OutputTestName";
         List<String> text = new ArrayList<>();
-        text.add("Мама");
-        text.add("мыла");
-        text.add("Рому");
+        text.add("Мама ");
+        text.add("мыла ");
+        text.add("Рому ");
         object.outputFile(text, outputName);
-        assertEquals(text, object.listOfLinesOfInputFile(outputName));
+        assertEquals(text, object.cutFromInputFile(outputName,true,"-1"));
     }
 
     @Test

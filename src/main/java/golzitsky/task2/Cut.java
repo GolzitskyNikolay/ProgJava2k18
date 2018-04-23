@@ -1,9 +1,12 @@
 package golzitsky.task2;
 
 import com.google.common.collect.Range;
+import com.google.common.primitives.Chars;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 public class Cut {
     /**
      * @param inputFileName - the name of the input file.
@@ -12,67 +15,52 @@ public class Cut {
      * @return cut words or cut symbols.
      */
     public List<String> cutWordsOrSymbols(String range, String inputFileName, boolean v) throws IOException {
-        List<String> result = new ArrayList<>();
         List<String> listOfLines;
         if (inputFileName == null) {
-            listOfLines = listOfConsoleLines();
+            listOfLines = cutFromConsole(v,range);
         } else {
-            listOfLines = listOfLinesOfInputFile(inputFileName);
+            listOfLines = cutFromInputFile(inputFileName,v,range);
         }
-        if (v) {
-            for (int i = 0; i < listOfWords(listOfLines).size(); i++) {
-                int size = listOfWords(listOfLines).get(i).size();
-                String[] words = listOfWords(listOfLines).get(i).toArray(new String[size]);
-                Range newRange = checkAndConvertRange(range, words);
-                result.add(String.valueOf(cutFromText(words, range, newRange, true)));
-            }
-        } else {
-            for (String listOfLine : listOfLines) {
-                String[] arrayOfStringOfFile = listOfLine.split("");
-                Range newRange = checkAndConvertRange(range, arrayOfStringOfFile);
-                result.add(cutFromText(arrayOfStringOfFile, range, newRange, false).toString());
-            }
-        }
-        return result;
+        return listOfLines;
     }
 
     /**
-     * @param arrayOfSymbolsOrWords - if you need to cut the characters, it takes an array of characters,
-     * if words, then takes an array of words.
+     * @param listOfSymbolsOrWords - if you need to cut the characters, it takes an list of characters,
+     * if words, then takes an list of words.
      * @return cut expression.
      */
-    private StringBuilder cutFromText(String[] arrayOfSymbolsOrWords, String range,
-                                     Range newRange, boolean v) {
-        StringBuilder string = new StringBuilder();
-        StringBuilder cutExpression = new StringBuilder();
+    private <T> String cutFromText(List<T> listOfSymbolsOrWords, String range,
+                               Range newRange, boolean v) {
+        String string = "";
+        String cutExpression = "";
         if (range.matches("-([1-9][0]*)+")) {
             for (int i = 0; i < newRange.upperEndpoint().hashCode(); i++) {
-                string.append(arrayOfSymbolsOrWords[i]);
+                string += listOfSymbolsOrWords.get(i);
                 if (v) {
-                    string.append(" ");
+                    string += " ";
                 }
                 if (i == newRange.upperEndpoint().hashCode() - 1) {
-                    cutExpression.append(string.toString());
+                    cutExpression += string;
                 }
             }
-        } else if (range.matches("([1-9][0]*)+-([1-9][0]*)+") && newRange!=null) {
+        } else if (range.matches("([1-9][0]*)+-([1-9][0]*)+") && newRange != null) {
             for (int i = newRange.lowerEndpoint().hashCode() - 1; i <= newRange.upperEndpoint().hashCode() - 1; i++) {
-                string.append(arrayOfSymbolsOrWords[i]);
+                string += listOfSymbolsOrWords.get(i);
                 if (v) {
-                    string.append(" ");
+                    string += " ";
                 }
                 if (i == newRange.upperEndpoint().hashCode() - 1) {
-                    cutExpression.append(string.toString());
+                    cutExpression += string;
                 }
             }
-        } else if (range.matches("([1-9][0]*)+-") && newRange!=null) {
-            for (int i = newRange.lowerEndpoint().hashCode() - 1; i < arrayOfSymbolsOrWords.length; i++) {
-                string.append(arrayOfSymbolsOrWords[i]);
+        } else if (range.matches("([1-9][0]*)+-") && newRange != null) {
+            for (int i = newRange.lowerEndpoint().hashCode() - 1; i < listOfSymbolsOrWords.size(); i++) {
+                string += listOfSymbolsOrWords.get(i);
                 if (v) {
-                    string.append(" ");
+                    string += " ";
                 }
-                if (i == arrayOfSymbolsOrWords.length - 1) {
-                    cutExpression.append(string.toString());
+                if (i == listOfSymbolsOrWords.size() - 1) {
+                    cutExpression += string;
                 }
             }
         }
@@ -80,15 +68,22 @@ public class Cut {
     }
 
     /**
-     * Adds each line from the console to the new list.
+     * Cut text from the console.
      */
-    private List<String> listOfConsoleLines() throws IOException {
+    public List<String> cutFromConsole(Boolean v, String range) throws IOException {
         List<String> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Use a new line and write \"end\" to finish writing!");
             String lineFromInput = reader.readLine();
             while (!lineFromInput.equalsIgnoreCase("END")) {
-                result.add(lineFromInput + "\n");
+                if (v) {
+                    Range newRange = checkAndConvertRange(range,listOfWords(lineFromInput),true);
+                    result.add(cutFromText(listOfWords(lineFromInput), range, newRange, true));
+                }else{
+                    List<Character> characterList = Chars.asList(lineFromInput.toCharArray());
+                    Range newRange = checkAndConvertRange(range,characterList,false);
+                    result.add(cutFromText(Chars.asList(lineFromInput.toCharArray()),range,newRange,false));
+                }
                 lineFromInput = reader.readLine();
             }
             reader.close();
@@ -97,17 +92,24 @@ public class Cut {
     }
 
     /**
-     * Adds each line from the input file to the new list.
+     * Cut text from the input file.
      * @throws FileNotFoundException if file not found.
      */
-    public List<String> listOfLinesOfInputFile(String inputFileName) throws IOException {
+    public List<String> cutFromInputFile(String inputFileName,Boolean v,String range) throws IOException {
         List<String> result = new ArrayList<>();
         File input = new File(inputFileName);
         if (!input.exists()) throw new FileNotFoundException("File not found!");
         try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
             String line = reader.readLine();
             while (line != null) {
-                result.add(line);
+                if (v) {
+                    Range newRange = checkAndConvertRange(range,listOfWords(line), true);
+                    result.add(cutFromText(listOfWords(line), range, newRange, true));
+                }else{
+                    List<Character> characterList = Chars.asList(line.toCharArray());
+                    Range newRange = checkAndConvertRange(range,characterList,false);
+                    result.add(cutFromText(Chars.asList(line.toCharArray()),range,newRange,false));
+                }
                 line = reader.readLine();
             }
         }
@@ -118,15 +120,9 @@ public class Cut {
      * @return list of words.
      * @throws IllegalArgumentException, if range isn't correct.
      */
-    public List<List<String>> listOfWords(List<String> inputLines) {
-        List<List<String>> words = new ArrayList<>();
-        inputLines.forEach(line -> {
-            List<String> wordsInLine = new ArrayList<>();
-            Arrays.stream(line.split(" +")).filter(e -> !e.equals("")).forEach(wordsInLine::add);
-            words.add(new ArrayList<>(wordsInLine));
-            wordsInLine.clear();
-        });
-        return words;
+    public List<String> listOfWords(String inputLine) {
+        return Arrays.stream(inputLine.split(" +")).filter(e -> !e.equals("")).
+                collect(Collectors.toList());
     }
 
     /**
@@ -147,28 +143,28 @@ public class Cut {
      * @return the list, that has numbers of range.
      * @throws IllegalArgumentException if range isn't correct.
      */
-    public Range checkAndConvertRange(String range, String[] symbolsOrWordsInLine) {
+    public <T> Range checkAndConvertRange(String range, List<T> symbolsOrWordsInLine, Boolean v) {
         Range newRange;
         if (range.matches("-([1-9][0]*)+")) {
             newRange = Range.closed(0, Integer.parseInt(range.split("-")[1]));
-            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.length) {
-                newRange = Range.closed(0, symbolsOrWordsInLine.length);
+            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.size()) {
+                newRange = Range.closed(0, symbolsOrWordsInLine.size());
             }
         } else if (range.matches("([1-9][0]*)+-([1-9][0]*)+")) {
             newRange = Range.closed(Integer.parseInt(range.split("-")[0]),
                     Integer.parseInt(range.split("-")[1]));
             if (newRange.lowerEndpoint().hashCode() > newRange.upperEndpoint().hashCode())
                 throw new IllegalArgumentException("Range isn't correct");
-            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.length &&
-                    symbolsOrWordsInLine.length >= newRange.lowerEndpoint().hashCode()) {
-                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.length);
+            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.size() &&
+                    symbolsOrWordsInLine.size() >= newRange.lowerEndpoint().hashCode()) {
+                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.size());
             }
-            if (symbolsOrWordsInLine.length < newRange.lowerEndpoint().hashCode()) {
+            if (symbolsOrWordsInLine.size() < newRange.lowerEndpoint().hashCode()) {
                 newRange = null;
             }
         } else if (range.matches("([1-9][0]*)+-")) {
-            if (symbolsOrWordsInLine.length >= Integer.parseInt(range.split("-")[0])) {
-                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.length);
+            if (symbolsOrWordsInLine.size() >= Integer.parseInt(range.split("-")[0])) {
+                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.size());
             } else {
                 newRange = null;
             }

@@ -58,7 +58,7 @@ public class CutLauncher {
             return;
         }
         try {
-            if (!indentsInWords && !indentsInCharacters) throw new NullPointerException("Write -c or -v");
+            if (!indentsInWords && !indentsInCharacters) throw new IllegalFormatFlagsException("Write -c or -v");
             if (indentsInWords && indentsInCharacters) throw new IllegalFormatFlagsException("Use only -c or -v");
             Cut object = new Cut();
             List<String> result = new ArrayList<>();
