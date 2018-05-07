@@ -32,12 +32,12 @@ class CutTests {
         String range = "2-3";
         Range newRange = Range.closed(Integer.parseInt(range.split("-")[0]),
                 Integer.parseInt(range.split("-")[1]));
-        object.cut("src\\test\\resources\\for_task2",true,range,newRange,false);
+        object.cut("src\\test\\resources\\for_task2",true,range,newRange);
         System.out.println(outContent.toString());
     }
 
     @TestFactory
-    Collection<DynamicTest> checkAndConvertRange_IllegalRange() {
+    Collection<DynamicTest> checkRange_IllegalRange() {
         List<String> listOfRanges = new ArrayList<>(Arrays.asList("2-1", "56-32", "12-*", "Bayan one love"));
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (String range : listOfRanges) {
@@ -50,7 +50,7 @@ class CutTests {
     }
 
     @Test
-    void checkAndConvertRange_Exception() {
+    void checkRange_Exception() {
         String range = "4-1";
         try {
             object.checkRange(range);
@@ -64,14 +64,14 @@ class CutTests {
     Collection<DynamicTest> convertRange_DynamicTest() {
         List<String> listOfRanges = new ArrayList<>(Arrays.asList("6-", "1-4", "-9", "6-6", "-48"));
         List<String> symbolsOrWordsInLine = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6"));
-        String[] newRanges = {"[6‥6]", "[1‥4]", "[0‥6]", "[6‥6]", "[0‥6]"};
+        String[] newRanges = {"[6‥6]", "[1‥4]", "[1‥6]", "[6‥6]", "[1‥6]"};
         Collection<DynamicTest> dynamicTests = new ArrayList<>();
         for (int i = 0; i < listOfRanges.size(); i++) {
             String range = listOfRanges.get(i);
             Object newRange = newRanges[i];
             Range newRange2 = object.checkRange(range);
             Executable exec = () -> assertEquals(newRange,
-                    object.convertRange(range, symbolsOrWordsInLine,newRange2).toString());
+                    object.convertRange(symbolsOrWordsInLine,newRange2).toString());
             DynamicTest dTest = DynamicTest.dynamicTest(range, exec);
             dynamicTests.add(dTest);
         }
@@ -92,7 +92,7 @@ class CutTests {
         Range newRange = Range.closed(Integer.parseInt(range.split("-")[0]),
                 Integer.parseInt(range.split("-")[1]));
         try {
-            object.cut(inputFileName, true, range,newRange,false);
+            object.cut(inputFileName, true, range,newRange);
             fail("Exception expected");
         } catch (IOException e) {
             assertEquals("File not found!", e.getMessage());
@@ -108,7 +108,7 @@ class CutTests {
         text.add("Рому ");
         object.outputFile(text, outputName);
         Range newRange = Range.closed(1,1);
-        assertEquals(text, object.cut(outputName, true, "-1",newRange,true));
+        assertEquals(text, object.cut(outputName, true, "-1",newRange));
         File output = new File(outputName);
         output.delete();
     }

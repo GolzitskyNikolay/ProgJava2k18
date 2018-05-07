@@ -8,10 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Cut {
-    //flags of range
-    private Boolean r1 = false;
-    private Boolean r2 = false;
-    private Boolean r3 = false;
+
     /**
      * @param inputFileName - the name of the input file.
      * @param range - specifies the output range.
@@ -24,7 +21,7 @@ public class Cut {
         if (inputFileName == null) {
             listOfLines = cut(v, range,newRange);
         } else {
-            listOfLines = cut(inputFileName, v, range, newRange,false);
+            listOfLines = cut(inputFileName, v, range, newRange);
         }
         return listOfLines;
     }
@@ -34,41 +31,21 @@ public class Cut {
      * if words, then takes an list of words.
      * @return cut expression.
      */
-    private <T> String cutFromText(List<T> listOfSymbolsOrWords, Range newRange, boolean v) {
-        String string = "";
-        String cutExpression = "";
-        if (r1) {
-            for (int i = 0; i < newRange.upperEndpoint().hashCode(); i++) {
-                string += listOfSymbolsOrWords.get(i);
+    private <T> String cutFromText(List<T> listOfSymbolsOrWords, Range<Integer> newRange, boolean v) {
+        StringBuilder string = new StringBuilder();
+        StringBuilder cutExpression = new StringBuilder();
+         if (newRange != null) {
+            for (int i = newRange.lowerEndpoint() - 1; i < newRange.upperEndpoint(); i++) {
+                string.append(listOfSymbolsOrWords.get(i));
                 if (v) {
-                    string += " ";
+                    string.append(" ");
                 }
-                if (i == newRange.upperEndpoint().hashCode() - 1) {
-                    cutExpression += string;
-                }
-            }
-        } else if (r2 && newRange != null) {
-            for (int i = newRange.lowerEndpoint().hashCode() - 1; i <= newRange.upperEndpoint().hashCode() - 1; i++) {
-                string += listOfSymbolsOrWords.get(i);
-                if (v) {
-                    string += " ";
-                }
-                if (i == newRange.upperEndpoint().hashCode() - 1) {
-                    cutExpression += string;
-                }
-            }
-        } else if (r3 && newRange != null) {
-            for (int i = newRange.lowerEndpoint().hashCode() - 1; i < listOfSymbolsOrWords.size(); i++) {
-                string += listOfSymbolsOrWords.get(i);
-                if (v) {
-                    string += " ";
-                }
-                if (i == listOfSymbolsOrWords.size() - 1) {
-                    cutExpression += string;
+                if (i == newRange.upperEndpoint() - 1) {
+                    cutExpression.append(string);
                 }
             }
         }
-        return cutExpression;
+        return String.valueOf(cutExpression);
     }
 
     /**
@@ -90,11 +67,11 @@ public class Cut {
 
     private List<String> addToResult(String range, String line, List<String> result, Boolean v, Range newRange) {
         if (v) {
-            newRange = convertRange(range, listOfWords(line), newRange);
+            newRange = convertRange(listOfWords(line), newRange);
             result.add(cutFromText(listOfWords(line), newRange, true));
         } else {
             List<Character> characterList = Chars.asList(line.toCharArray());
-            newRange = convertRange(range, characterList, newRange);
+            newRange = convertRange(characterList, newRange);
             result.add(cutFromText(Chars.asList(line.toCharArray()), newRange, false));
         }
         return result;
@@ -105,8 +82,7 @@ public class Cut {
      * @throws FileNotFoundException if file not found.
      */
     public List<String> cut(String inputFileName,Boolean v,String range,
-                            Range newRange,Boolean forTests) throws IOException {
-        if (forTests) r1 = true;
+                            Range newRange) throws IOException {
         List<String> result = new ArrayList<>();
         File input = new File(inputFileName);
         if (!input.exists()) throw new FileNotFoundException("File not found!");
@@ -146,47 +122,28 @@ public class Cut {
     /**
      * Convert range.
      */
-    public <T> Range convertRange(String range, List<T> symbolsOrWordsInLine,Range newRange) {
-        if (r1) {
-            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.size()) {
-                newRange = Range.closed(0, symbolsOrWordsInLine.size());
-            }
-        } else if (r2) {
-            if (newRange.upperEndpoint().hashCode() > symbolsOrWordsInLine.size() &&
-                    symbolsOrWordsInLine.size() >= newRange.lowerEndpoint().hashCode()) {
-                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.size());
-            }
-            if (symbolsOrWordsInLine.size() < newRange.lowerEndpoint().hashCode()) {
-                newRange = null;
-            }
-        } else if (r3) {
-            if (symbolsOrWordsInLine.size() >= Integer.parseInt(range.split("-")[0])) {
-                newRange = Range.closed(Integer.parseInt(range.split("-")[0]), symbolsOrWordsInLine.size());
-            } else {
-                newRange = null;
-            }
-        }
+    public <T> Range convertRange(List<T> symbolsOrWordsInLine,Range<Integer> newRange) {
+        if (newRange.lowerEndpoint()>symbolsOrWordsInLine.size()) newRange = null;
+        if (newRange != null && newRange.upperEndpoint() > symbolsOrWordsInLine.size())
+            newRange = Range.closed(newRange.lowerEndpoint(), symbolsOrWordsInLine.size());
         return newRange;
     }
 
     /**
      * @throws IllegalArgumentException if range isn't correct.
      */
-    public Range checkRange(String range){
-        Range newRange;
+    public Range<Integer> checkRange(String range){
+        Range<Integer> newRange;
         if (range.matches("-([1-9][0]*)+")) {
-            newRange = Range.closed(0, Integer.parseInt(range.split("-")[1]));
-            r1 = true;
+            newRange = Range.closed(1, Integer.parseInt(range.split("-")[1]));
         } else if (range.matches("([1-9][0]*)+-([1-9][0]*)+")) {
             newRange = Range.closed(Integer.parseInt(range.split("-")[0]),
                     Integer.parseInt(range.split("-")[1]));
-            if (newRange.lowerEndpoint().hashCode() > newRange.upperEndpoint().hashCode())
+            if (newRange.lowerEndpoint() > newRange.upperEndpoint())
                 throw new IllegalArgumentException("Range isn't correct");
-            r2 = true;
         } else if (range.matches("([1-9][0]*)+-")) {
             newRange = Range.closed(Integer.parseInt(range.split("-")[0]),
-                    Integer.parseInt(range.split("-")[0]));
-            r3 = true;
+                    Integer.parseInt(String.valueOf(Integer.MAX_VALUE)));
         } else throw new IllegalArgumentException("Range isn't correct");
         return newRange;
     }
