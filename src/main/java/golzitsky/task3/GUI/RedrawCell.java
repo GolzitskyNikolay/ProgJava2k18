@@ -1,13 +1,16 @@
-package golzitsky.task3;
+package golzitsky.task3.GUI;
 
-import java.util.*;
+import golzitsky.task3.core.Cell;
+import golzitsky.task3.core.Field;
+
 import javax.swing.*;
+import java.util.Random;
 
-public class Cell extends JButton {
-    private boolean hasBomb;
-    private int countOfBombs;
-    private boolean isOpen = false;
-    private boolean hasFlag = false;
+import static golzitsky.task3.GUI.PlaySound.playSound;
+import static golzitsky.task3.GUI.SapperLauncher.bombs;
+import static golzitsky.task3.GUI.SapperLauncher.winOrLose;
+
+public class RedrawCell extends Cell {
 
     boolean isHasFlag() {
         return hasFlag;
@@ -29,24 +32,11 @@ public class Cell extends JButton {
         hasBomb = false;
     }
 
-    private void showEmptyButtons(Cell[] buttons, int i) {
+    private void showEmptyButtons(RedrawCell[] buttons, int i) {
         buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
-
-        if ((Field.numbersOfEmptyButtons.contains(i - 8) && i > 8 && !buttons[i].isOpen)) {
-            forShowEmptyButtons(buttons, i - 8);
-        }
-        if (Field.numbersOfEmptyButtons.contains(i + 8) && i < 53 && !buttons[i].isOpen) {
-            forShowEmptyButtons(buttons, i + 8);
-        }
-        if (Field.numbersOfEmptyButtons.contains(i + 1) && (i < i + 1) && i != 31 && !buttons[i].isOpen) {
-            forShowEmptyButtons(buttons, i + 1);
-        }
-        if (Field.numbersOfEmptyButtons.contains(i - 1) && (i > i - 1) && i != 32 && !buttons[i].isOpen) {
-            forShowEmptyButtons(buttons, i - 1);
-        }
     }
 
-    private void forShowEmptyButtons(Cell[] buttons, int i) {
+    private void forShowEmptyButtons(RedrawCell[] buttons, int i) {
         if (!buttons[i].isOpen) {
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
             buttons[i].setPressedIcon(null);
@@ -55,14 +45,15 @@ public class Cell extends JButton {
         }
     }
 
-    private void showAllBombs(Cell[] buttons) {
+    private void showAllBombs(RedrawCell[] buttons) {
         for (Integer number : Field.numbersOfBombs) {
             buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
         }
-        SapperLauncher.winOrLose("Game over!");
+        playSound("src\\main\\resources\\sounds\\boom.wav");
+        winOrLose("Game over!");
     }
 
-    void changeButton(Cell[] buttons, int i) {
+    void changeButton(RedrawCell[] buttons, int i) {
         if (countOfBombs == -1) showAllBombs(buttons);
         if (countOfBombs == 0) showEmptyButtons(buttons, i);
         if (countOfBombs == 1) buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\num1.png"));
@@ -77,7 +68,7 @@ public class Cell extends JButton {
         isOpen = true;
     }
 
-    void makeFlag(Cell[] buttons, int i) {
+    void makeFlag(RedrawCell[] buttons, int i) {
         if (!hasFlag) {
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
             buttons[i].setPressedIcon(null);
@@ -91,7 +82,6 @@ public class Cell extends JButton {
 
     void chanceOfBomb() {
         Random rnd = new Random();
-        hasBomb = rnd.nextInt(100) < 25;
+        hasBomb = rnd.nextInt(100) < bombs;
     }
 }
-
