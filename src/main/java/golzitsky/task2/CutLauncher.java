@@ -14,13 +14,13 @@ import org.kohsuke.args4j.*;
  *    -c             all numeric parameters specify indents in the characters of the input file.
  *    -v             all numeric parameters specify indents in words of the input file.
  *    -o             specifies the name of the output file(If the name of the output file is not entered,
- *                   the result is output to the console).
+ *                   the result is output to the GUI).
  *    -r             specifies the output range and has one of the following types(N and K are integers):
  *                   -K range from the beginning of the line to K
  *                   N- range from N to the end of the line
  *                   N-K range from N to K.
  *    <p>file        specifies the name of the input file(if the file name is not specified
- *                   or is incorrect, it reads the text from the console).
+ *                   or is incorrect, it reads the text from the GUI).
  *
  * Must be specified at least one of the parameters "-c" or "-v" and "-r".
  * Example:

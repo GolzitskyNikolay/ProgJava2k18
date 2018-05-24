@@ -50,32 +50,7 @@ public class Menu {
         difficult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog jDialog = new JDialog();
-                jDialog.setModal(true);
-                JPanel jPanel = new JPanel();
-
-                JSlider slider = new JSlider(10, 90, bombs);
-                slider.setMajorTickSpacing(10);
-                slider.setPaintTicks(true);
-                slider.setSnapToTicks(true);
-                slider.setPaintLabels(true);
-
-                JButton button = new JButton("Save changes");
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        bombs = slider.getValue();
-                        jDialog.dispose();
-                    }
-                });
-                jPanel.add(slider);
-                jPanel.add(button);
-
-                jDialog.add(jPanel);
-                jDialog.setBounds(465, 300, 450, 100);
-                jDialog.setResizable(false);
-
-                jDialog.setVisible(true);
+                forDifficultAndMap(true);
             }
         });
         settings.add(difficult);
@@ -88,41 +63,54 @@ public class Menu {
         sizeOfMap.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog jDialog = new JDialog();
-                jDialog.setModal(true);
-                JPanel jPanel = new JPanel();
-
-                JSlider slider = new JSlider(5, 15, mapSize);
-                slider.setMajorTickSpacing(1);
-                slider.setPaintTicks(true);
-                slider.setSnapToTicks(true);
-                slider.setPaintLabels(true);
-
-                JButton button = new JButton("Save changes");
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        int result = JOptionPane.showConfirmDialog(null,
-                                "The current game will be over." + "\n" +
-                                        "Do you want to start a new game?");
-                        if (result == JOptionPane.YES_OPTION) {
-                            mapSize = slider.getValue();
-                            startGame();
-                        }
-                        jDialog.dispose();
-                    }
-                });
-                jPanel.add(slider);
-                jPanel.add(button);
-
-                jDialog.add(jPanel);
-                jDialog.setBounds(465, 300, 450, 100);
-                jDialog.setResizable(false);
-
-                jDialog.setVisible(true);
+                forDifficultAndMap(false);
             }
         });
         settings.add(sizeOfMap);
+    }
+
+    private static void forDifficultAndMap(Boolean isDifficult){
+        JDialog jDialog = new JDialog();
+        jDialog.setModal(true);
+        JPanel jPanel = new JPanel();
+        JSlider slider;
+       if (!isDifficult) {
+           slider = new JSlider(5, 15, mapSize);
+           slider.setMajorTickSpacing(1);
+       }
+       else {
+           slider = new JSlider(10, 90, bombs);
+           slider.setMajorTickSpacing(10);
+       }
+        slider.setPaintTicks(true);
+        slider.setSnapToTicks(true);
+        slider.setPaintLabels(true);
+
+        JButton button = new JButton("Save changes");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isDifficult) bombs = slider.getValue();
+                else {
+                    int result = JOptionPane.showConfirmDialog(null,
+                            "The current game will be over." + "\n" +
+                                    "Do you want to start a new game?");
+                    if (result == JOptionPane.YES_OPTION) {
+                        mapSize = slider.getValue();
+                        startGame();
+                    }
+                }
+                jDialog.dispose();
+            }
+        });
+        jPanel.add(slider);
+        jPanel.add(button);
+
+        jDialog.add(jPanel);
+        jDialog.setBounds(465, 300, 450, 100);
+        jDialog.setResizable(false);
+
+        jDialog.setVisible(true);
     }
 
     private static void addExit(JMenu game) {

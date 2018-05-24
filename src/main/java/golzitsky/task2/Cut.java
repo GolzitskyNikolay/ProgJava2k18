@@ -49,7 +49,7 @@ public class Cut {
     }
 
     /**
-     * Cut text from the console.
+     * Cut text from the GUI.
      */
     public List<String> cut(Boolean v, String range, Range newRange) throws IOException {
         List<String> result = new ArrayList<>();

@@ -75,7 +75,7 @@ public class GenerateField extends Field {
         }
     }
 
-    private int countNumberOfBombs(RedrawCell[] fieldButtons, int i) {
+    int countNumberOfBombs(RedrawCell[] fieldButtons, int i) {
         int numberOfBombs = 0;
         if (i % mapSize != 0 && i >= mapSize +1 && fieldButtons[i - (mapSize +1)].isHasBomb()) numberOfBombs++;
 

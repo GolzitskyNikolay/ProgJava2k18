@@ -12,18 +12,6 @@ import static golzitsky.task3.GUI.SapperLauncher.winOrLose;
 
 public class RedrawCell extends Cell {
 
-    boolean isHasFlag() {
-        return hasFlag;
-    }
-
-    boolean isOpen() {
-        return isOpen;
-    }
-
-    boolean isHasBomb() {
-        return hasBomb;
-    }
-
     void getNumberOfBombs(int numberOfBombs) {
         countOfBombs = numberOfBombs;
     }
@@ -32,20 +20,11 @@ public class RedrawCell extends Cell {
         hasBomb = false;
     }
 
-    private void showEmptyButtons(RedrawCell[] buttons, int i) {
+    private void showEmptyButtons(Cell[] buttons, int i) {
         buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
     }
 
-    private void forShowEmptyButtons(RedrawCell[] buttons, int i) {
-        if (!buttons[i].isOpen) {
-            buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
-            buttons[i].setPressedIcon(null);
-            buttons[i].isOpen = true;
-            Field.quantityOfOpenButtons++;
-        }
-    }
-
-    private void showAllBombs(RedrawCell[] buttons) {
+    private void showAllBombs(Cell[] buttons) {
         for (Integer number : Field.numbersOfBombs) {
             buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
         }
@@ -53,7 +32,7 @@ public class RedrawCell extends Cell {
         winOrLose("Game over!");
     }
 
-    void changeButton(RedrawCell[] buttons, int i) {
+    void changeButton(Cell[] buttons, int i) {
         if (countOfBombs == -1) showAllBombs(buttons);
         if (countOfBombs == 0) showEmptyButtons(buttons, i);
         if (countOfBombs == 1) buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\num1.png"));
@@ -68,15 +47,17 @@ public class RedrawCell extends Cell {
         isOpen = true;
     }
 
-    void makeFlag(RedrawCell[] buttons, int i) {
-        if (!hasFlag) {
-            buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
-            buttons[i].setPressedIcon(null);
-            hasFlag = true;
-        } else {
-            buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
-            buttons[i].setPressedIcon(new ImageIcon("src\\main\\resources\\images\\inform.png"));
-            hasFlag = false;
+    void makeFlag(Cell[] buttons, int i) {
+        if (!isOpen) {
+            if (!hasFlag) {
+                buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
+                buttons[i].setPressedIcon(null);
+                hasFlag = true;
+            } else {
+                buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
+                buttons[i].setPressedIcon(new ImageIcon("src\\main\\resources\\images\\inform.png"));
+                hasFlag = false;
+            }
         }
     }
 
