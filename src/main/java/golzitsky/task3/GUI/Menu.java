@@ -1,5 +1,7 @@
 package golzitsky.task3.GUI;
 
+import golzitsky.task3.core.Field;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -12,17 +14,17 @@ import static golzitsky.task3.GUI.SapperLauncher.*;
 
 public class Menu {
 
-    static void createMenu() throws IOException {
-        changeIcon();
+    static void createMenu(Field classField, JFrame jFrame, JPanel panel) throws IOException {
+        changeIcon(jFrame);
         JMenuBar menuBar = new JMenuBar();
 
         JMenu game = new JMenu("Game");
-        addNewGame(game);
+        addNewGame(game, classField, jFrame, panel);
         addExit(game);
 
         JMenu settings = new JMenu("Settings");
-        addSizeOfMap(settings);
-        addDifficult(settings);
+        addSizeOfMap(settings, classField, jFrame, panel);
+        addDifficult(settings, classField, jFrame, panel);
         addSound(settings);
 
         menuBar.add(game);
@@ -31,57 +33,56 @@ public class Menu {
         jFrame.setJMenuBar(menuBar);
     }
 
-    private static void addNewGame(JMenu game) {
+    private static void addNewGame(JMenu game, Field classField, JFrame jFrame, JPanel panel) {
         ImageIcon flag1 = new ImageIcon("src\\main\\resources\\images\\reload.png");
         JMenuItem newGame = new JMenuItem("Start New Game", flag1);
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame();
+                startGame(classField, jFrame, panel);
             }
         });
         game.add(newGame);
     }
 
-    private static void addDifficult(JMenu settings) {
+    private static void addDifficult(JMenu settings, Field classField, JFrame jFrame, JPanel panel) {
         ImageIcon flag2 = new ImageIcon("src\\main\\resources\\images\\settings.png");
         JMenuItem difficult = new JMenuItem("Difficult", flag2);
-        difficult.setToolTipText("You can choose number of bombs");
+        difficult.setToolTipText("You can choose number of chanceOfBombs");
         difficult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forDifficultAndMap(true);
+                forDifficultAndMap(true, classField, jFrame, panel);
             }
         });
         settings.add(difficult);
     }
 
-    private static void addSizeOfMap(JMenu settings) {
+    private static void addSizeOfMap(JMenu settings, Field classField, JFrame jFrame, JPanel panel) {
         ImageIcon flag3 = new ImageIcon("src\\main\\resources\\images\\field.png");
         JMenuItem sizeOfMap = new JMenuItem("Size of map", flag3);
         sizeOfMap.setToolTipText("You can choose map size of the playing field");
         sizeOfMap.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forDifficultAndMap(false);
+                forDifficultAndMap(false, classField, jFrame, panel);
             }
         });
         settings.add(sizeOfMap);
     }
 
-    private static void forDifficultAndMap(Boolean isDifficult){
+    private static void forDifficultAndMap(Boolean isDifficult, Field classField, JFrame jFrame, JPanel panel) {
         JDialog jDialog = new JDialog();
         jDialog.setModal(true);
         JPanel jPanel = new JPanel();
         JSlider slider;
-       if (!isDifficult) {
-           slider = new JSlider(5, 15, mapSize);
-           slider.setMajorTickSpacing(1);
-       }
-       else {
-           slider = new JSlider(10, 90, bombs);
-           slider.setMajorTickSpacing(10);
-       }
+        if (!isDifficult) {
+            slider = new JSlider(5, 15, classField.mapSize);
+            slider.setMajorTickSpacing(1);
+        } else {
+            slider = new JSlider(10, 90, classField.chanceOfBombs);
+            slider.setMajorTickSpacing(10);
+        }
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
         slider.setPaintLabels(true);
@@ -90,14 +91,14 @@ public class Menu {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isDifficult) bombs = slider.getValue();
+                if (isDifficult) classField.chanceOfBombs = slider.getValue();
                 else {
                     int result = JOptionPane.showConfirmDialog(null,
                             "The current game will be over." + "\n" +
                                     "Do you want to start a new game?");
                     if (result == JOptionPane.YES_OPTION) {
-                        mapSize = slider.getValue();
-                        startGame();
+                        classField.mapSize = slider.getValue();
+                        startGame(classField, jFrame, panel);
                     }
                 }
                 jDialog.dispose();
@@ -131,20 +132,22 @@ public class Menu {
 
         JMenuItem sound = new JMenuItem("turn on/off Sound", flag5);
 
-        if (playSound) sound.setToolTipText("Sound on");
+        PlaySound playSoundObject = new PlaySound();
+
+        if (playSoundObject.playSound) sound.setToolTipText("Sound on");
 
         sound.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                playSound = !playSound;
-                if (playSound) sound.setToolTipText("Sound on");
+                playSoundObject.playSound = !playSoundObject.playSound;
+                if (playSoundObject.playSound) sound.setToolTipText("Sound on");
                 else sound.setToolTipText("Sound off");
             }
         });
         settings.add(sound);
     }
 
-    private static void changeIcon() throws IOException {
+    private static void changeIcon(JFrame jFrame) throws IOException {
         Image icon = ImageIO.read(new java.io.File("src\\main\\resources\\images\\bomb1.png"));
         jFrame.setIconImage(icon);
     }

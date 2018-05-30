@@ -5,11 +5,12 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
-import static golzitsky.task3.GUI.SapperLauncher.playSound;
-
 public class PlaySound {
+    public boolean playSound = true;
+
     static void playSound(String string) {
-        if (playSound) {
+        PlaySound playSoundObject = new PlaySound();
+        if (playSoundObject.playSound) {
             try {
                 File soundFile = new File(string);
                 AudioInputStream inAudio = AudioSystem.getAudioInputStream(soundFile);
@@ -18,7 +19,7 @@ public class PlaySound {
                 clip.setFramePosition(0);
                 clip.start();
             } catch (Exception e) {
-                System.out.println("Error! Can't play sound.");
+                System.out.println("Error! Can't play sound!");
             }
         }
     }

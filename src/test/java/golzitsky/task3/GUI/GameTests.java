@@ -1,5 +1,7 @@
 package golzitsky.task3.GUI;
 
+import golzitsky.task3.core.Field;
+import golzitsky.task3.core.GameLogic;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -7,6 +9,64 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTests {
+
+    @Test
+    void lose() {
+        int mapSize = 5;
+        Field field = new Field();
+        GameLogic object = new GameLogic();
+        Set<Integer> setOfBombs = new HashSet<>(Arrays.asList(0, 4, 6, 8, 12, 16, 18, 20, 24));
+        field.buttons = new RedrawCell[mapSize * mapSize];
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            field.buttons[i] = new RedrawCell();
+            if (setOfBombs.contains(i)) field.buttons[i].hasBomb = true;
+        }
+        field.buttons[12].isOpen = true;
+        assertTrue(object.isLose(field.buttons[12]));
+    }
+
+    @Test
+    void win() {
+        Field field = new Field();
+        field.mapSize = 5;
+        int mapSize = field.mapSize;
+        GameLogic object = new GameLogic();
+        Set<Integer> setOfBombs = new HashSet<>(Arrays.asList(0, 4, 6, 8, 12, 16, 18, 20, 24));
+        field.buttons = new RedrawCell[mapSize * mapSize];
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            field.buttons[i] = new RedrawCell();
+            if (setOfBombs.contains(i)) {
+                field.buttons[i].hasBomb = true;
+                field.allBombs++;
+                field.numbersOfBombs.add(i);
+            }
+        }
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            if (!setOfBombs.contains(i)) {
+                field.buttons[i].isOpen = true;
+                field.quantityOfOpenButtons++;
+            }
+        }
+        assertTrue(object.isWin(field));
+    }
+
+    @Test
+    void anyCellThatDoesntHaveBombHasNumberLessThenNine() {
+        Field field = new Field();
+        field.mapSize = 6;
+        int mapSize = field.mapSize;
+        Set<Integer> setOfBombs = new HashSet<>(Arrays.asList(1, 3, 7, 8, 9, 13, 15, 19, 20, 21, 25, 30, 32));
+        GameLogic object = new GameLogic();
+        field.buttons = new RedrawCell[mapSize * mapSize];
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            field.buttons[i] = new RedrawCell();
+            if (setOfBombs.contains(i)) field.buttons[i].hasBomb = true;
+        }
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            if (!setOfBombs.contains(i))
+                assertTrue(object.countNumberOfBombsAroundCell(field.buttons, i, mapSize) < 9);
+        }
+    }
 
     @Test
     void countOfBombsAroundCell() {
@@ -37,21 +97,21 @@ class GameTests {
                         4, 2, 1, 1, 2, 4, 4, 2, 1, 2, 5, 5, 5, 5, 2, 2, 5, 5, 5, 5, 2, 1, 2, 4, 4, 2, 1, 1,
                         2, 4, 5, 5, 4, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1))
         ));
-        RedrawCell[] testField;
-        GenerateField object;
+        Field field = new Field();
+        GameLogic object = new GameLogic();
         for (int mapSize : mapSizes) {
-            SapperLauncher.mapSize = mapSize;
-            testField = new RedrawCell[mapSize * mapSize];
+            field.buttons = new RedrawCell[mapSize * mapSize];
             for (int i = 0; i < mapSize * mapSize; i++) {
-                testField[i] = new RedrawCell();
-                if (setsOfBombs.get(mapSize - 5).contains(i)) testField[i].hasBomb = true;
+                field.buttons[i] = new RedrawCell();
+                if (setsOfBombs.get(mapSize - 5).contains(i)) field.buttons[i].hasBomb = true;
             }
-            object = new GenerateField();
             List<Integer> result = new ArrayList<>();
             for (int i = 0; i < mapSize * mapSize; i++) {
-                if (!setsOfBombs.get(mapSize - 5).contains(i)) result.add(object.countNumberOfBombs(testField, i));
+                if (!setsOfBombs.get(mapSize - 5).contains(i))
+                    result.add(object.countNumberOfBombsAroundCell(field.buttons, i, mapSize));
             }
             assertEquals(result, expectedResults.get(mapSize - 5));
         }
     }
+
 }

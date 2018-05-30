@@ -1,52 +1,59 @@
 package golzitsky.task3.GUI;
 
+import golzitsky.task3.core.Field;
+
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import static golzitsky.task3.GUI.Menu.createMenu;
-import static golzitsky.task3.core.Field.*;
 
 public class SapperLauncher {
-    static int bombs = 30;
-    static int mapSize = 8;
-    static boolean playSound = true;
-    static JFrame jFrame = new JFrame();
-    private static JPanel panel = new JPanel();
 
     public static void main(String[] args) throws IOException {
+        JFrame jFrame = new JFrame();
+        JPanel panel = new JPanel();
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setResizable(false);
-        createMenu();
-        startGame();
+        Field classField = new Field();
+        classField.mapSize = 8;
+        classField.chanceOfBombs = 30;
+        createMenu(classField, jFrame, panel);
+        startGame(classField, jFrame, panel);
         jFrame.add(panel);
     }
 
-    static void startGame() {
-        jFrame.setBounds(540 - 3 * mapSize,360 - 20 * mapSize,mapSize * 50,mapSize * 50 + 25);
+    static void startGame(Field classField, JFrame jFrame, JPanel panel) {
+        int mapSize = classField.mapSize;
+        jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
         panel.setLayout(new GridLayout(mapSize, mapSize));
-        quantityOfOpenButtons = 0;
-        numbersOfEmptyButtons.clear();
-        numbersOfBombs.clear();
-        buttons = new RedrawCell[mapSize * mapSize];
+        classField.allBombs = 0;
+        classField.quantityOfOpenButtons = 0;
+        classField.numbersOfEmptyButtons.clear();
+        classField.numbersOfBombs.clear();
+        classField.buttons = new RedrawCell[mapSize * mapSize];
         panel.removeAll();
         GenerateField field = new GenerateField();
-        field.createEmptyField(panel);
+        field.createEmptyField(panel, classField, jFrame);
         jFrame.setVisible(true);
     }
 
-    static void winOrLose(String message) {
-        for (RedrawCell button : buttons) {
+    static void endGame(String message, Field classField, JFrame jFrame, JPanel panel) {
+        for (RedrawCell button : classField.buttons) {
             button.setPressedIcon(null);
             for (ActionListener actionListener : button.getActionListeners()) {
                 button.removeActionListener(actionListener);
             }
+            for (MouseListener mouseListener : button.getMouseListeners()) {
+                button.removeMouseListener(mouseListener);
+            }
         }
         int result = JOptionPane.showConfirmDialog(null,
                 message + "\n" + "Do you want to start a new game?");
-        if (result == JOptionPane.YES_OPTION) startGame();
+        if (result == JOptionPane.YES_OPTION) startGame(classField, jFrame, panel);
         if (result == JOptionPane.NO_OPTION) System.exit(0);
     }
 }
