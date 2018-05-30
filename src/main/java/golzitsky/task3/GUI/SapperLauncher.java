@@ -18,11 +18,11 @@ public class SapperLauncher {
         JPanel panel = new JPanel();
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setResizable(false);
-        Field classField = new Field();
-        classField.mapSize = 8;
-        classField.chanceOfBombs = 30;
-        createMenu(classField, jFrame, panel);
-        startGame(classField, jFrame, panel);
+        Field board = new Field();
+        board.mapSize = 8;
+        board.chanceOfBombs = 30;
+        createMenu(board, jFrame, panel);
+        startGame(board, jFrame, panel);
         jFrame.add(panel);
     }
 

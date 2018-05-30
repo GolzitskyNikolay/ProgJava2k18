@@ -1,5 +1,6 @@
 package golzitsky.task3.GUI;
 
+import golzitsky.task3.core.Cell;
 import golzitsky.task3.core.Field;
 import golzitsky.task3.core.GameLogic;
 
@@ -28,11 +29,34 @@ public class GenerateField extends Field {
         }
     }
 
+    private void generateFieldByFirstClick(int i, Field classField) {
+        GameLogic gameLogic = new GameLogic();
+        Cell[] fieldButtons = classField.buttons;
+        fieldButtons[i].firstButtonHasntBomb();
+        for (int j = 0; j < mapSize * mapSize; j++) {
+            if (j != i) {
+                fieldButtons[j].chanceOfBomb(classField, fieldButtons[j]);
+                if (fieldButtons[j].isHasBomb()) {
+                    classField.allBombs++;
+                    classField.numbersOfBombs.add(j);
+                }
+            }
+        }
+        for (int j = 0; j < mapSize * mapSize; j++) {
+            int numberOfBombs = -1;
+            if (!fieldButtons[j].isHasBomb()) {
+                numberOfBombs = gameLogic.countNumberOfBombsAroundCell(fieldButtons, j, mapSize);
+            }
+            if (numberOfBombs == 0) classField.numbersOfEmptyButtons.add(j);
+            fieldButtons[j].countOfBombs(numberOfBombs);
+        }
+    }
+
     private void addActionListener(RedrawCell button, int i, Field classField, JFrame jFrame, JPanel panel) {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (classField.quantityOfOpenButtons == 0) {
-                    gameLogic.generateFieldByFirstClick(i, classField, mapSize);
+                    generateFieldByFirstClick(i, classField);
                 }
                 if (!button.isHasFlag() && !button.isOpen()) {
                     classField.quantityOfOpenButtons++;

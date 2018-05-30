@@ -6,7 +6,8 @@ import javax.sound.sampled.Clip;
 import java.io.File;
 
 public class PlaySound {
-    public boolean playSound = true;
+
+    boolean playSound = true;
 
     static void playSound(String string) {
         PlaySound playSoundObject = new PlaySound();
