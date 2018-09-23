@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import static golzitsky.botForSapper.GUI.SapperLauncher.startGame;
-
 public class Menu {
 
     static void createMenu(Field classField, JFrame jFrame, JPanel panel) throws IOException {
@@ -38,7 +36,7 @@ public class Menu {
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(classField, jFrame, panel);
+                BotLauncher.startGame(classField, jFrame, panel);
             }
         });
         game.add(newGame);
@@ -97,7 +95,7 @@ public class Menu {
                                     "Do you want to start a new game?");
                     if (result == JOptionPane.YES_OPTION) {
                         classField.mapSize = slider.getValue();
-                        startGame(classField, jFrame, panel);
+                        BotLauncher.startGame(classField, jFrame, panel);
                     }
                 }
                 jDialog.dispose();

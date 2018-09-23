@@ -1,5 +1,6 @@
 package golzitsky.botForSapper.GUI;
 
+import golzitsky.botForSapper.core.BotLogic;
 import golzitsky.botForSapper.core.Cell;
 import golzitsky.botForSapper.core.Field;
 import golzitsky.botForSapper.core.GameLogic;
@@ -8,27 +9,29 @@ import javax.swing.*;
 
 import java.util.*;
 
-import static golzitsky.botForSapper.GUI.PlaySound.playSound;
-
-public class RedrawCell extends Cell {
+class RedrawCell extends Cell {
     private GameLogic gameLogic = new GameLogic();
+    private BotLogic botLogic = new BotLogic();
 
     private void showAllBombs(Field field) {
-        for (Integer number : field.numbersOfBombs) {
+        for (Integer number : field.allNumbersOfBombs) {
             field.buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
         }
-        playSound("src\\main\\resources\\sounds\\boom.wav");
-        JOptionPane.showMessageDialog(null,"Game Over!!!");
+        PlaySound.playSound("src\\main\\resources\\sounds\\boom.wav");
     }
 
     void openButton(Cell[] buttons, Field field, int i, int mapSize, Queue<Integer> buttonsAroundEmptyButton) {
+        field.numbersOfDigits.add(i);
         buttons[i].isOpen = true;
         field.quantityOfOpenButtons++;
-        if (gameLogic.isLose(buttons[i])) showAllBombs(field);
+        if (gameLogic.isLose(buttons[i])) {
+            System.out.println(i);
+            showAllBombs(field);
+        }
         if (buttons[i].countOfBombs == 0) {
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
             field.numbersOfEmptyButtons.add(i);
-            gameLogic.openOrCountButtonsAroundCell(buttons, i, mapSize, buttonsAroundEmptyButton, false);
+            botLogic.openOrCountNotOpenButtonsOrFlagsAroundCell(buttons, i, mapSize, buttonsAroundEmptyButton, false, false);
         }
         if (buttons[i].countOfBombs == 1)
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\num1.png"));
@@ -49,14 +52,10 @@ public class RedrawCell extends Cell {
     }
 
     void makeFlag(Cell[] buttons, int i) {
-        if (!hasFlag) {
+        if (!buttons[i].hasFlag) {
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
             buttons[i].setPressedIcon(null);
             buttons[i].hasFlag = true;
-        } else {
-            buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
-            buttons[i].setPressedIcon(new ImageIcon("src\\main\\resources\\images\\inform.png"));
-            buttons[i].hasFlag = false;
         }
     }
 

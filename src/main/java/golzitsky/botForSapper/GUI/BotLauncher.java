@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import static golzitsky.botForSapper.GUI.Menu.createMenu;
 
-public class SapperLauncher {
+public class BotLauncher {
 
     public static void main(String[] args) throws IOException {
         JFrame jFrame = new JFrame();
@@ -17,7 +17,7 @@ public class SapperLauncher {
         jFrame.setResizable(false);
         Field board = new Field();
         board.mapSize = 15;
-        board.chanceOfBombs = 30;
+        board.chanceOfBombs = 10;          
         createMenu(board, jFrame, panel);
         startGame(board, jFrame, panel);
         jFrame.add(panel);
@@ -30,7 +30,11 @@ public class SapperLauncher {
         classField.allBombs = 0;
         classField.quantityOfOpenButtons = 0;
         classField.numbersOfButtonsAroundEmptyButton.clear();
-        classField.numbersOfBombs.clear();
+        classField.allNumbersOfBombs.clear();
+        classField.numbersOfEmptyButtons.clear();
+        classField.knownNumbersOfBombs.clear();
+        classField.numbersOfDigits.clear();
+        classField.buttonsWithoutBombs.clear();
         classField.buttons = new RedrawCell[mapSize * mapSize];
         panel.removeAll();
         GenerateField field = new GenerateField();
