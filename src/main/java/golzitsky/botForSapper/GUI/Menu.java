@@ -1,6 +1,7 @@
 package golzitsky.botForSapper.GUI;
 
 import golzitsky.botForSapper.core.Field;
+import golzitsky.botForSapper.GUI.GenerateField;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,7 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Menu {
+
+class Menu {
 
     static void createMenu(Field classField, JFrame jFrame, JPanel panel) throws IOException {
         changeIcon(jFrame);
@@ -24,11 +26,13 @@ public class Menu {
         addDifficult(settings, classField, jFrame, panel);
         addSound(settings);
 
+
         menuBar.add(game);
         menuBar.add(settings);
         jFrame.add(menuBar);
         jFrame.setJMenuBar(menuBar);
     }
+
 
     private static void addNewGame(JMenu game, Field classField, JFrame jFrame, JPanel panel) {
         ImageIcon flag1 = new ImageIcon("src\\main\\resources\\images\\reload.png");

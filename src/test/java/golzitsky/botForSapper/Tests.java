@@ -4,7 +4,6 @@ package golzitsky.botForSapper;
 import golzitsky.botForSapper.core.BotLogic;
 import golzitsky.botForSapper.core.Cell;
 import golzitsky.botForSapper.core.Field;
-import golzitsky.botForSapper.core.GameLogic;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -12,6 +11,21 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class Tests {
+
+    @Test
+    void notOpenButtonsAroundButton() {
+        Field field = new Field();
+        field.buttons = new Cell[25];
+        for (int i = 0; i < 25; i++) {
+            field.buttons[i] = new Cell();
+        }
+        field.buttons[0].setOpen(true);
+        field.buttons[1].setOpen(true);
+        field.buttons[2].setOpen(true);
+        BotLogic botLogic = new BotLogic();
+        Set<Integer> set = new HashSet<>(botLogic.notOpenButtonsAroundButton(5, field.buttons, 5));
+        assertEquals(set, new HashSet<>(Arrays.asList(10, 11, 6)));
+    }
 
     @Test
     void numbersOfFlagsAroundCell() {
@@ -22,23 +36,27 @@ class Tests {
         for (int i = 0; i < mapSize * mapSize; i++) {
             field.buttons[i] = new Cell();
         }
-        field.buttons[2].hasFlag = true;
-        field.buttons[6].hasFlag = true;
-        field.buttons[3].countOfBombs = 1;
-        field.buttons[7].countOfBombs = 2;
-        field.buttons[8].countOfBombs = 1;
-        field.buttons[10].countOfBombs = 1;
-        field.buttons[11].countOfBombs = 1;
-        field.buttons[12].countOfBombs = 1;
-        field.buttons[1].countOfBombs = 2;
-        field.buttons[0].countOfBombs = 1;
-        field.buttons[5].countOfBombs = 1;
-        Queue<Integer> queue = new LinkedList<>();
-        botLogic.openOrCountNotOpenButtonsOrFlagsAroundCell(field.buttons, 7, mapSize, queue, false, true);
+        field.buttons[2].setFlag(true);
+        field.buttons[6].setFlag(true);
+        field.buttons[15].setFlag(true);
         Queue<Integer> result = new LinkedList<>();
         result.add(2);
         result.add(6);
-        assertEquals(queue, result);
+        assertEquals(botLogic.numbersOfFlagsAroundCell(7, field.buttons, mapSize), result);
+        result.clear();
+        result.add(15);
+        assertEquals(botLogic.numbersOfFlagsAroundCell(16, field.buttons, mapSize), result);
+        result.clear();
+        field.buttons[1].setFlag(true);
+        field.buttons[2].setFlag(true);
+        field.buttons[3].setFlag(true);
+        field.buttons[6].setFlag(true);
+        field.buttons[8].setFlag(true);
+        field.buttons[11].setFlag(true);
+        field.buttons[12].setFlag(true);
+        field.buttons[13].setFlag(true);
+        result.addAll(Arrays.asList(1, 2, 3, 6, 13, 12, 11, 8));
+        assertEquals(botLogic.numbersOfFlagsAroundCell(7, field.buttons, mapSize), result);
     }
 
     @Test
@@ -50,8 +68,8 @@ class Tests {
         for (int i = 0; i < mapSize * mapSize; i++) {
             field.buttons[i] = new Cell();
         }
-        field.buttons[2].hasFlag = true;
-        field.buttons[6].hasFlag = true;
+        field.buttons[2].setFlag(true);
+        field.buttons[6].setFlag(true);
         field.buttons[3].countOfBombs = 1;
         field.buttons[7].countOfBombs = 2;
         field.buttons[8].countOfBombs = 1;
@@ -63,11 +81,22 @@ class Tests {
         field.buttons[0].countOfBombs = 1;
         field.buttons[5].countOfBombs = 1;
 
-        field.buttons[7].isOpen = true;
-        field.numbersOfDigits.add(7);
+        field.buttons[5].setOpen(true);
+        field.buttons[7].setOpen(true);
+        field.buttons[8].setOpen(true);
+        field.buttons[13].setOpen(true);
+        field.buttons[11].setOpen(true);
+        field.buttons[10].setOpen(true);
+        field.numbersOfOpenCellsWithDigit.addAll(Arrays.asList(5, 7, 8, 10, 13, 11));
 
         botLogic.knowButtonsWithoutBombs(field.buttons, mapSize, field);
-        Set<Integer> set = new HashSet<>(Arrays.asList(1, 3, 8, 11, 12, 13));
-        assertEquals(field.buttonsWithoutBombs, set);
+        assertEquals(field.buttonsWithoutBombsAround1, new HashSet<>(
+                Arrays.asList(0, 1, 3, 4, 9, 12, 14, 15, 16, 17)));
+        assertEquals(field.buttonsWithoutBombsAround2, new HashSet<>(Arrays.asList(1, 3, 12)));
+        field.buttons[15].setFlag(true);
+        field.buttons[16].countOfBombs = 0;
+        botLogic.knowButtonsWithoutBombs(field.buttons, mapSize, field);
+        assertEquals(field.buttonsWithoutBombsAround1, new HashSet<>(
+                Arrays.asList(0, 1, 3, 4, 9, 12, 14, 15, 16, 17)));
     }
 }

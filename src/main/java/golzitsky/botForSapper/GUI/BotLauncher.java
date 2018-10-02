@@ -1,6 +1,7 @@
 package golzitsky.botForSapper.GUI;
 
 import golzitsky.botForSapper.core.Field;
+import golzitsky.botForSapper.core.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,30 +16,45 @@ public class BotLauncher {
         JPanel panel = new JPanel();
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setResizable(false);
-        Field board = new Field();
-        board.mapSize = 15;
-        board.chanceOfBombs = 10;          
-        createMenu(board, jFrame, panel);
-        startGame(board, jFrame, panel);
+        Field field = new Field();
+        field.mapSize = 15;
+        field.chanceOfBombs = 10;
+        createMenu(field, jFrame, panel);
+        startGame(field, jFrame, panel);
         jFrame.add(panel);
     }
 
-    static void startGame(Field classField, JFrame jFrame, JPanel panel) {
-        int mapSize = classField.mapSize;
+    static void startGame(Field field, JFrame jFrame, JPanel panel) {
+        int mapSize = field.mapSize;
         jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
         panel.setLayout(new GridLayout(mapSize, mapSize));
-        classField.allBombs = 0;
-        classField.quantityOfOpenButtons = 0;
-        classField.numbersOfButtonsAroundEmptyButton.clear();
-        classField.allNumbersOfBombs.clear();
-        classField.numbersOfEmptyButtons.clear();
-        classField.knownNumbersOfBombs.clear();
-        classField.numbersOfDigits.clear();
-        classField.buttonsWithoutBombs.clear();
-        classField.buttons = new RedrawCell[mapSize * mapSize];
+        field.allBombs = 0;
+        field.quantityOfOpenButtons = 0;
+
+        field.numbersOfButtonsAroundEmptyButton.clear();
+        field.allNumbersOfBombs.clear();
+        field.numbersOfEmptyButtons.clear();
+        field.knownNumbersOfBombs.clear();
+        field.numbersOfOpenCellsWithDigit.clear();
+        field.buttonsWithoutBombsAround1.clear();
+        field.buttonsWithoutBombsAround2.clear();
+        field.buttonsWithoutBombsAround3.clear();
+        field.buttonsWithoutBombsAround4.clear();
+        field.buttonsWithoutBombsAround5.clear();
+        field.buttonsWithoutBombsAround6.clear();
+        field.buttonsWithoutBombsAround7.clear();
+        field.buttonsWithoutBombsAround8.clear();
+
+        field.buttons = new RedrawCell[mapSize * mapSize];
         panel.removeAll();
-        GenerateField field = new GenerateField();
-        field.createEmptyField(panel, classField, jFrame);
+
+        GameLogic gameLogic = new GameLogic();
+
+        GenerateField generateField = new GenerateField();
+        generateField.createEmptyField(panel, field, gameLogic);
         jFrame.setVisible(true);
+
+        BotMovies botMovies = new BotMovies();
+        botMovies.begin(field, generateField.getNumberOfOpenButton(), gameLogic);
     }
 }

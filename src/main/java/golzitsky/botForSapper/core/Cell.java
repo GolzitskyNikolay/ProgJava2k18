@@ -4,12 +4,10 @@ import javax.swing.*;
 import java.util.Random;
 
 public class Cell extends JButton {
-    public boolean hasFlag = false;
-    public boolean hasBomb = false;
-    public boolean isOpen = false;
-
     public int countOfBombs;
-
+    private boolean hasFlag = false;
+    private boolean hasBomb = false;
+    private boolean isOpen = false;
 
     public void countOfBombs(int numberOfBombs) {
         countOfBombs = numberOfBombs;
@@ -23,6 +21,10 @@ public class Cell extends JButton {
         return isOpen;
     }
 
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
     public boolean isHasBomb() {
         return hasBomb;
     }
@@ -34,5 +36,9 @@ public class Cell extends JButton {
     public void chanceOfBomb(Field field, Cell cell) {
         Random rnd = new Random();
         cell.hasBomb = rnd.nextInt(100) <= field.chanceOfBombs;
+    }
+
+    public void setFlag(boolean hasFlag) {
+        this.hasFlag = hasFlag;
     }
 }

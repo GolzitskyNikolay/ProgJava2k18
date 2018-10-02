@@ -1,14 +1,12 @@
 package golzitsky.botForSapper.core;
 
 public class GameLogic {
-    public Boolean isWin = false;
 
     public Boolean isLose(Cell cell) {
-        return cell.hasBomb && cell.isOpen;
+        return cell.isHasBomb() && cell.isOpen();
     }
 
     public Boolean isWin(Field field) {
-        isWin = true;
         return field.quantityOfOpenButtons + field.allBombs == field.mapSize * field.mapSize;
     }
 

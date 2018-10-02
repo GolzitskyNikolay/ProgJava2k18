@@ -7,31 +7,39 @@ import golzitsky.botForSapper.core.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class GenerateField extends Field {
-    private GameLogic gameLogic = new GameLogic();
+    private GameLogic gameLogic;
     private BotLogic botLogic = new BotLogic();
+    private Field field;
     private int mapSize;
 
-    void createEmptyField(JPanel panel, Field field, JFrame jFrame) {
-        mapSize = field.mapSize;
-        for (int i = 0; i < mapSize * mapSize; i++) {
-            field.buttons[i] = new RedrawCell();
-            field.buttons[i].setPreferredSize(new Dimension(50, 50));
-            field.buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
-            panel.add(field.buttons[i]);
-        }
-        generateFieldByFirstRandomOpenButton(field, jFrame, panel);
+    int getNumberOfOpenButton() {
+        return numberOfOpenButton;
     }
 
-    private void generateFieldByFirstRandomOpenButton(Field field, JFrame jFrame, JPanel panel) {
-        final int[] numberOfOpenButton = {botLogic.numberOfRandomOpenButton(mapSize)};
-        Cell[] buttons = field.buttons;
-        buttons[numberOfOpenButton[0]].firstButtonHasntBomb();
+    private int numberOfOpenButton;
+    private Cell[] buttons;
+
+    void createEmptyField(JPanel panel, Field ourField, GameLogic gameLogic) {
+        field = ourField;
+        buttons = field.buttons;
+        mapSize = field.mapSize;
+        this.gameLogic = gameLogic;
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            buttons[i] = new RedrawCell();
+            buttons[i].setPreferredSize(new Dimension(50, 50));
+            buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
+            panel.add(buttons[i]);
+        }
+        generateFieldByFirstRandomOpenButton();
+    }
+
+    private void generateFieldByFirstRandomOpenButton() {
+        numberOfOpenButton = botLogic.numberOfRandomOpenButton(mapSize);
+        buttons[numberOfOpenButton].firstButtonHasntBomb();
         for (int j = 0; j < mapSize * mapSize; j++) {
-            if (j != numberOfOpenButton[0]) {
+            if (j != numberOfOpenButton) {
                 buttons[j].chanceOfBomb(field, buttons[j]);
                 if (buttons[j].isHasBomb()) {
                     field.allBombs++;
@@ -46,45 +54,5 @@ class GenerateField extends Field {
             }
             buttons[j].countOfBombs(numberOfBombs);
         }
-
-        RedrawCell redrawCell = new RedrawCell();
-        field.numbersOfDigits.add(numberOfOpenButton[0]);
-
-        Timer timer = new Timer(500, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                redrawCell.openButton(buttons, field, numberOfOpenButton[0],
-                        mapSize, numbersOfButtonsAroundEmptyButton);
-
-                while (!numbersOfButtonsAroundEmptyButton.isEmpty()) {       //открываем всё вокруг пустой клетки
-                    redrawCell.openButton(buttons, field, numbersOfButtonsAroundEmptyButton.poll(),
-                            mapSize, numbersOfButtonsAroundEmptyButton);
-                }
-
-                field.numbersOfDigits.removeAll(field.numbersOfEmptyButtons);
-
-                for (int element : field.numbersOfDigits) {           //записываем номера бомб в knownNumbersOfBombs
-                    if (field.buttons[element].isOpen)                //для пометки флагом
-                        botLogic.maybeAroundCellOnlyBombs(element, field.buttons, mapSize, field);
-                }
-
-                if (!field.knownNumbersOfBombs.isEmpty()) {              //cтавим флаги на известные места бомб
-                    for (int button : field.knownNumbersOfBombs) {
-                        redrawCell.makeFlag(buttons, button);
-                    }
-                    field.knownNumbersOfBombs.clear();
-                }
-
-                botLogic.knowButtonsWithoutBombs(buttons, mapSize, field);
-
-                if (gameLogic.isLose(field.buttons[numberOfOpenButton[0]]) || gameLogic.isWin(field)) {
-                    System.out.println("Game over!!!");
-                }
-                numberOfOpenButton[0] = botLogic.numberOfNextOpenButton(numberOfOpenButton[0],
-                        buttons, mapSize, field);
-            }
-        });
-        timer.setRepeats(true);
-        timer.start();
     }
 }
