@@ -28,9 +28,6 @@ public class BotLauncher {
         BotMovies botMovies = new BotMovies();
         botMovies.getTimer().stop();
 
-        int mapSize = field.mapSize;
-        jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
-        panel.setLayout(new GridLayout(mapSize, mapSize));
         field.allBombs = 0;
         field.quantityOfOpenButtons = 0;
 
@@ -38,6 +35,7 @@ public class BotLauncher {
         field.allNumbersOfBombs.clear();
         field.numbersOfEmptyButtons.clear();
         field.knownNumbersOfBombs.clear();
+        field.knownNumbersOfFlags.clear();
         field.numbersOfOpenCellsWithDigit.clear();
         field.buttonsWithoutBombsAround1.clear();
         field.buttonsWithoutBombsAround2.clear();
@@ -46,7 +44,10 @@ public class BotLauncher {
         field.buttonsWithoutBombsAround5.clear();
         field.buttonsWithoutBombsAround6.clear();
         field.buttonsWithoutBombsAround7.clear();
-        field.buttonsWithoutBombsAround8.clear();
+
+        int mapSize = field.mapSize;
+        jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
+        panel.setLayout(new GridLayout(mapSize, mapSize));
 
         field.buttons = new RedrawCell[mapSize * mapSize];
         panel.removeAll();

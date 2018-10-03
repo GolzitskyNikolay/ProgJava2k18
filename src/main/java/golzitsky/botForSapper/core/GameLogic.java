@@ -10,7 +10,7 @@ public class GameLogic {
         return field.quantityOfOpenButtons + field.allBombs == field.mapSize * field.mapSize;
     }
 
-    public int countNumberOfBombsAroundCell(Cell[] fieldButtons, int i, int mapSize) {
+    public int countBombsAroundCell(Cell[] fieldButtons, int i, int mapSize) {
         int numberOfBombs = 0;
         if (i % mapSize != 0 && i >= mapSize + 1 && fieldButtons[i - (mapSize + 1)].isHasBomb()) numberOfBombs++;
 

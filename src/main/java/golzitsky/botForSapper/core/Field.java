@@ -12,6 +12,7 @@ public class Field {
     public int allBombs;
     public int mapSize;
     public Set<Integer> knownNumbersOfBombs = new HashSet<>();
+    public Set<Integer> knownNumbersOfFlags = new HashSet<>();
     public Set<Integer> numbersOfOpenCellsWithDigit = new HashSet<>();
     public Set<Integer> buttonsWithoutBombsAround1 = new HashSet<>();
     public Set<Integer> buttonsWithoutBombsAround2 = new HashSet<>();
@@ -20,5 +21,4 @@ public class Field {
     public Set<Integer> buttonsWithoutBombsAround5 = new HashSet<>();
     public Set<Integer> buttonsWithoutBombsAround6 = new HashSet<>();
     public Set<Integer> buttonsWithoutBombsAround7 = new HashSet<>();
-    public Set<Integer> buttonsWithoutBombsAround8 = new HashSet<>();
 }

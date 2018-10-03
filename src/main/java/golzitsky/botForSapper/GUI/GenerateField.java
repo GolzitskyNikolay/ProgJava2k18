@@ -13,13 +13,12 @@ class GenerateField extends Field {
     private BotLogic botLogic = new BotLogic();
     private Field field;
     private int mapSize;
+    private int numberOfOpenButton;
+    private Cell[] buttons;
 
     int getNumberOfOpenButton() {
         return numberOfOpenButton;
     }
-
-    private int numberOfOpenButton;
-    private Cell[] buttons;
 
     void createEmptyField(JPanel panel, Field ourField, GameLogic gameLogic) {
         field = ourField;
@@ -50,7 +49,7 @@ class GenerateField extends Field {
         for (int j = 0; j < mapSize * mapSize; j++) {
             int numberOfBombs = -1;
             if (!buttons[j].isHasBomb()) {
-                numberOfBombs = gameLogic.countNumberOfBombsAroundCell(buttons, j, mapSize);
+                numberOfBombs = gameLogic.countBombsAroundCell(buttons, j, mapSize);
             }
             buttons[j].countOfBombs(numberOfBombs);
         }

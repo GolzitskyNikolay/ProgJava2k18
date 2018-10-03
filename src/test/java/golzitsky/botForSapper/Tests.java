@@ -23,7 +23,7 @@ class Tests {
         field.buttons[1].setOpen(true);
         field.buttons[2].setOpen(true);
         BotLogic botLogic = new BotLogic();
-        Set<Integer> set = new HashSet<>(botLogic.notOpenButtonsAroundButton(5, field.buttons, 5));
+        Set<Integer> set = new HashSet<>(botLogic.notOpenedCellsAroundCell(5, field.buttons, 5));
         assertEquals(set, new HashSet<>(Arrays.asList(10, 11, 6)));
     }
 

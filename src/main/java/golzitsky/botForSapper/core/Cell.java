@@ -33,12 +33,12 @@ public class Cell extends JButton {
         hasBomb = false;
     }
 
+    public void setFlag(boolean hasFlag) {
+        this.hasFlag = hasFlag;
+    }
+
     public void chanceOfBomb(Field field, Cell cell) {
         Random rnd = new Random();
         cell.hasBomb = rnd.nextInt(100) <= field.chanceOfBombs;
-    }
-
-    public void setFlag(boolean hasFlag) {
-        this.hasFlag = hasFlag;
     }
 }

@@ -12,9 +12,15 @@ import java.util.*;
 class RedrawCell extends Cell {
     private BotLogic botLogic = new BotLogic();
 
-    private void showAllBombs(Field field) {
+    private void showAllBombs(Field field, int i) {
+        field.buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
+        field.allNumbersOfBombs.remove(i);
+        field.allNumbersOfBombs.removeAll(field.knownNumbersOfFlags);
+        for (Integer number : field.knownNumbersOfFlags) {
+            field.buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\foundBomb.png"));
+        }
         for (Integer number : field.allNumbersOfBombs) {
-            field.buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
+            field.buttons[number].setIcon(new ImageIcon("src\\main\\resources\\images\\bomb.png"));
         }
     }
 
@@ -23,11 +29,11 @@ class RedrawCell extends Cell {
         if (!buttons[i].isOpen()) {
             buttons[i].setOpen(true);
             field.quantityOfOpenButtons++;
-            if (gameLogic.isLose(buttons[i])) showAllBombs(field);
+            if (gameLogic.isLose(buttons[i])) showAllBombs(field, i);
             else if (buttons[i].countOfBombs == 0) {
                 buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\zero.png"));
                 field.numbersOfEmptyButtons.add(i);
-                botLogic.openOrCountNotOpenButtonsOrFlagsAroundCell(buttons, i, mapSize,
+                botLogic.openOrCountNotOpenedCellsOrFlagsAroundCell(buttons, i, mapSize,
                         buttonsAroundEmptyButton, false, false);
             } else field.numbersOfOpenCellsWithDigit.add(i);
             if (buttons[i].countOfBombs == 1)
@@ -49,8 +55,9 @@ class RedrawCell extends Cell {
         }
     }
 
-    void makeFlag(Cell[] buttons, int i) {
+    void makeFlag(Cell[] buttons, int i, Field field) {
         if (!buttons[i].isHasFlag()) {
+            field.knownNumbersOfFlags.add(i);
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
             buttons[i].setPressedIcon(null);
             buttons[i].setFlag(true);
