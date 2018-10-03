@@ -78,11 +78,11 @@ class Menu {
         JPanel jPanel = new JPanel();
         JSlider slider;
         if (!isDifficult) {
-            slider = new JSlider(5, 15, classField.mapSize);
+            slider = new JSlider(5, 16, classField.mapSize);
             slider.setMajorTickSpacing(1);
         } else {
-            slider = new JSlider(10, 90, classField.chanceOfBombs);
-            slider.setMajorTickSpacing(10);
+            slider = new JSlider(5, 26, classField.chanceOfBombs);
+            slider.setMajorTickSpacing(3);
         }
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);

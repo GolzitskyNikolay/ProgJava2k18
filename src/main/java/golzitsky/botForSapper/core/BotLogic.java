@@ -3,8 +3,7 @@ package golzitsky.botForSapper.core;
 import java.util.*;
 
 public class BotLogic {
-    private void forOpenOrCountButtonsAroundCell_1(Cell[] buttons, int i, Queue<Integer> buttonsAroundButton) {
-        buttons[i].setOpen(true);
+    private void forOpenOrCountButtonsAroundCell_1(int i, Queue<Integer> buttonsAroundButton) {
         buttonsAroundButton.add(i);
     }
 
@@ -15,7 +14,7 @@ public class BotLogic {
         } else if (countNumbersOfFlags && buttons[i].isHasFlag()) {
             buttonsAroundCell.add(i);
         } else if (!countNumbersOfFlags) {
-            forOpenOrCountButtonsAroundCell_1(buttons, i, buttonsAroundCell);
+            forOpenOrCountButtonsAroundCell_1(i, buttonsAroundCell);
         }
     }
 

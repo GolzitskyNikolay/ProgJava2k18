@@ -18,13 +18,16 @@ public class BotLauncher {
         jFrame.setResizable(false);
         Field field = new Field();
         field.mapSize = 15;
-        field.chanceOfBombs = 10;
+        field.chanceOfBombs = 11;
         createMenu(field, jFrame, panel);
         startGame(field, jFrame, panel);
         jFrame.add(panel);
     }
 
     static void startGame(Field field, JFrame jFrame, JPanel panel) {
+        BotMovies botMovies = new BotMovies();
+        botMovies.getTimer().stop();
+
         int mapSize = field.mapSize;
         jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
         panel.setLayout(new GridLayout(mapSize, mapSize));
@@ -54,7 +57,6 @@ public class BotLauncher {
         generateField.createEmptyField(panel, field, gameLogic);
         jFrame.setVisible(true);
 
-        BotMovies botMovies = new BotMovies();
         botMovies.begin(field, generateField.getNumberOfOpenButton(), gameLogic);
     }
 }

@@ -14,13 +14,16 @@ class BotMovies {
     private Cell[] buttons;
     private Field field;
     private int mapSize;
-
-    private Timer timer = new Timer(100, new ActionListener() {
+    private Timer timer = new Timer(250, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             repeatCode(buttons, field, mapSize);
         }
     });
+
+    Timer getTimer() {
+        return timer;
+    }
 
     void begin(Field field, int firstOpenButton, GameLogic gameLogic) {
         this.gameLogic = gameLogic;
@@ -36,42 +39,37 @@ class BotMovies {
     private void repeatCode(Cell[] buttons, Field field, int mapSize) {
         redrawCell.openButton(buttons, field, numberOfOpenButton,
                 mapSize, field.numbersOfButtonsAroundEmptyButton, gameLogic);
-
         if (gameLogic.isLose(buttons[numberOfOpenButton])) {
-            endGame("Lose!!!");
+            System.out.println("Lose!!!");
+            timer.stop();
             PlaySound.playSound("src\\main\\resources\\sounds\\boom.wav");
-        }
-
-        if (gameLogic.isWin(field)) {
-            endGame("Win!!!");
+        } else if (gameLogic.isWin(field)) {
+            System.out.println("Win!!!");
+            timer.stop();
             PlaySound.playSound("src\\main\\resources\\sounds\\win.wav");
-        }
+        } else {
 
-        while (!field.numbersOfButtonsAroundEmptyButton.isEmpty()) {
-            redrawCell.openButton(buttons, field, field.numbersOfButtonsAroundEmptyButton.poll(),
-                    mapSize, field.numbersOfButtonsAroundEmptyButton, gameLogic);
-        }
-
-        for (int element : field.numbersOfOpenCellsWithDigit) {
-            if (buttons[element].isOpen())
-                botLogic.maybeAroundCellOnlyBombs(element, buttons, mapSize, field);
-        }
-
-        if (!field.knownNumbersOfBombs.isEmpty()) {
-            for (int button : field.knownNumbersOfBombs) {
-                redrawCell.makeFlag(buttons, button);
+            while (!field.numbersOfButtonsAroundEmptyButton.isEmpty()) {
+                redrawCell.openButton(buttons, field, field.numbersOfButtonsAroundEmptyButton.poll(),
+                        mapSize, field.numbersOfButtonsAroundEmptyButton, gameLogic);
             }
-            field.knownNumbersOfBombs.clear();
+
+            for (int element : field.numbersOfOpenCellsWithDigit) {
+                if (buttons[element].isOpen())
+                    botLogic.maybeAroundCellOnlyBombs(element, buttons, mapSize, field);
+            }
+
+            if (!field.knownNumbersOfBombs.isEmpty()) {
+                for (int button : field.knownNumbersOfBombs) {
+                    redrawCell.makeFlag(buttons, button);
+                }
+                field.knownNumbersOfBombs.clear();
+            }
+
+            botLogic.knowButtonsWithoutBombs(buttons, mapSize, field);
+
+            numberOfOpenButton = botLogic.numberOfNextOpenButton(numberOfOpenButton,
+                    buttons, mapSize, field);
         }
-
-        botLogic.knowButtonsWithoutBombs(buttons, mapSize, field);
-
-        numberOfOpenButton = botLogic.numberOfNextOpenButton(numberOfOpenButton,
-                buttons, mapSize, field);
-    }
-
-    private void endGame(String message) {
-        System.out.println(message);
-        timer.stop();
     }
 }
