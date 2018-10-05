@@ -31,10 +31,10 @@ class GenerateField extends Field {
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\closed.png"));
             panel.add(buttons[i]);
         }
-        generateFieldByFirstRandomOpenButton();
+        generateFieldByFirstOpenButton();
     }
 
-    private void generateFieldByFirstRandomOpenButton() {
+    private void generateFieldByFirstOpenButton() {
         numberOfOpenButton = botLogic.numberOfRandomOpenButton(mapSize);
         buttons[numberOfOpenButton].firstButtonHasntBomb();
         for (int j = 0; j < mapSize * mapSize; j++) {

@@ -99,4 +99,35 @@ class Tests {
         assertEquals(field.buttonsWithoutBombsAround1, new HashSet<>(
                 Arrays.asList(0, 1, 3, 4, 9, 12, 14, 15, 16, 17)));
     }
+
+    @Test
+    void maybeAroundCellOnlyBombs() {
+        int mapSize = 5;
+        BotLogic botLogic = new BotLogic();
+        Field field = new Field();
+        field.buttons = new Cell[mapSize * mapSize];
+        for (int i = 0; i < mapSize * mapSize; i++) {
+            field.buttons[i] = new Cell();
+        }
+        field.buttons[0].countOfBombs = -1;
+        field.buttons[1].countOfBombs = -1;
+        field.buttons[2].countOfBombs = 1;
+        field.buttons[2].setOpen(true);
+        field.buttons[5].countOfBombs = 2;
+        field.buttons[5].setOpen(true);
+        field.buttons[7].countOfBombs = 1;
+        field.buttons[7].setOpen(true);
+        field.buttons[10].countOfBombs = 0;
+        field.buttons[10].setOpen(true);
+        field.buttons[11].countOfBombs = 0;
+        field.buttons[11].setOpen(true);
+        field.buttons[12].countOfBombs = 0;
+        field.buttons[12].setOpen(true);
+
+        field.buttons[6].countOfBombs = 2;
+        field.buttons[6].setOpen(true);
+        botLogic.maybeAroundCellOnlyBombs(6, field.buttons, mapSize, field);
+        assertEquals(new HashSet<>(Arrays.asList(0, 1)), field.knownNumbersOfBombs);
+
+    }
 }

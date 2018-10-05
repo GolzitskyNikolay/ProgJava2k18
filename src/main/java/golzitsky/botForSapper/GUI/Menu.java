@@ -1,7 +1,6 @@
 package golzitsky.botForSapper.GUI;
 
 import golzitsky.botForSapper.core.Field;
-import golzitsky.botForSapper.GUI.GenerateField;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,66 +12,89 @@ import java.io.IOException;
 
 class Menu {
 
-    static void createMenu(Field classField, JFrame jFrame, JPanel panel) throws IOException {
+    static void createMenu(Field classField, JFrame jFrame, JPanel panel, BotMovies botMovies) throws IOException {
         changeIcon(jFrame);
         JMenuBar menuBar = new JMenuBar();
 
         JMenu game = new JMenu("Game");
-        addNewGame(game, classField, jFrame, panel);
+        addNewGame(game, classField, jFrame, panel, botMovies);
         addExit(game);
 
         JMenu settings = new JMenu("Settings");
-        addSizeOfMap(settings, classField, jFrame, panel);
-        addDifficult(settings, classField, jFrame, panel);
+        addSizeOfMap(settings, classField, jFrame, panel, botMovies);
+        addDifficult(settings, classField, jFrame, panel, botMovies);
         addSound(settings);
 
+        JMenu stopOrStartTimer = new JMenu("Pause");
+        stopOrStartTimer(stopOrStartTimer, botMovies);
 
         menuBar.add(game);
         menuBar.add(settings);
+        menuBar.add(stopOrStartTimer);
+
         jFrame.add(menuBar);
         jFrame.setJMenuBar(menuBar);
     }
 
+    private static void stopOrStartTimer(JMenu stopOrStartTimer, BotMovies botMovies) {
+        JMenuItem pause = new JMenuItem("stop/start");
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!botMovies.getPause()) {
+                    botMovies.getTimer().stop();
+                    botMovies.setPause(true);
+                } else {
+                    botMovies.setPause(false);
+                    botMovies.getTimer().start();
+                }
+            }
+        });
+        stopOrStartTimer.add(pause);
+    }
 
-    private static void addNewGame(JMenu game, Field classField, JFrame jFrame, JPanel panel) {
+    private static void addNewGame(JMenu game, Field classField, JFrame jFrame, JPanel panel, BotMovies botMovies) {
         ImageIcon flag1 = new ImageIcon("src\\main\\resources\\images\\reload.png");
         JMenuItem newGame = new JMenuItem("Start New Game", flag1);
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BotLauncher.startGame(classField, jFrame, panel);
+                BotLauncher.startGame(classField, jFrame, panel, botMovies);
             }
         });
         game.add(newGame);
     }
 
-    private static void addDifficult(JMenu settings, Field classField, JFrame jFrame, JPanel panel) {
+    private static void addDifficult(JMenu settings, Field classField, JFrame jFrame,
+                                     JPanel panel, BotMovies botMovies) {
         ImageIcon flag2 = new ImageIcon("src\\main\\resources\\images\\settings.png");
         JMenuItem difficult = new JMenuItem("Difficult", flag2);
         difficult.setToolTipText("You can choose number of chanceOfBombs");
         difficult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forDifficultAndMap(true, classField, jFrame, panel);
+                forDifficultAndMap(true, classField, jFrame, panel, botMovies);
             }
         });
         settings.add(difficult);
     }
 
-    private static void addSizeOfMap(JMenu settings, Field classField, JFrame jFrame, JPanel panel) {
+    private static void addSizeOfMap(JMenu settings, Field classField, JFrame jFrame,
+                                     JPanel panel, BotMovies botMovies) {
         ImageIcon flag3 = new ImageIcon("src\\main\\resources\\images\\field.png");
         JMenuItem sizeOfMap = new JMenuItem("Size of map", flag3);
         sizeOfMap.setToolTipText("You can choose map size of the playing field");
         sizeOfMap.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forDifficultAndMap(false, classField, jFrame, panel);
+                forDifficultAndMap(false, classField, jFrame, panel, botMovies);
             }
         });
         settings.add(sizeOfMap);
     }
 
-    private static void forDifficultAndMap(Boolean isDifficult, Field classField, JFrame jFrame, JPanel panel) {
+    private static void forDifficultAndMap(Boolean isDifficult, Field classField, JFrame jFrame,
+                                           JPanel panel, BotMovies botMovies) {
         JDialog jDialog = new JDialog();
         jDialog.setModal(true);
         JPanel jPanel = new JPanel();
@@ -99,7 +121,7 @@ class Menu {
                                     "Do you want to start a new game?");
                     if (result == JOptionPane.YES_OPTION) {
                         classField.mapSize = slider.getValue();
-                        BotLauncher.startGame(classField, jFrame, panel);
+                        BotLauncher.startGame(classField, jFrame, panel, botMovies);
                     }
                 }
                 jDialog.dispose();

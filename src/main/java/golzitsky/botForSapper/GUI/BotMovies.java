@@ -14,6 +14,14 @@ class BotMovies {
     private Cell[] buttons;
     private Field field;
     private int mapSize;
+    private Boolean pause = false;
+    void setPause(Boolean pause) {
+        this.pause = pause;
+    }
+
+    Boolean getPause() {
+        return pause;
+    }
 
     private Timer timer = new Timer(150, new ActionListener() {
         @Override
@@ -34,22 +42,18 @@ class BotMovies {
         mapSize = field.mapSize;
         timer.setRepeats(true);
         timer.start();
-
     }
 
     /**
-     * This method always repeat in the Timer.
+     * This method is repeated in the Timer.
      */
     private void repeatCode(Cell[] buttons, Field field, int mapSize) {
         redrawCell.openButton(buttons, field, numberOfNextOpenButton,             //open cell
                 mapSize, field.numbersOfButtonsAroundEmptyButton, gameLogic);
-
         if (gameLogic.isLose(buttons[numberOfNextOpenButton])) {
-            System.out.println("Lose!!!");
             timer.stop();
             PlaySound.playSound("src\\main\\resources\\sounds\\boom.wav");
         } else if (gameLogic.isWin(field)) {
-            System.out.println("Win!!!");
             timer.stop();
             PlaySound.playSound("src\\main\\resources\\sounds\\win.wav");
         } else {

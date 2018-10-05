@@ -17,20 +17,20 @@ public class BotLauncher {
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setResizable(false);
         Field field = new Field();
+        BotMovies botMovies = new BotMovies();
         field.mapSize = 15;
         field.chanceOfBombs = 11;
-        createMenu(field, jFrame, panel);
-        startGame(field, jFrame, panel);
+        createMenu(field, jFrame, panel, botMovies);
+        startGame(field, jFrame, panel, botMovies);
         jFrame.add(panel);
     }
 
-    static void startGame(Field field, JFrame jFrame, JPanel panel) {
-        BotMovies botMovies = new BotMovies();
+    static void startGame(Field field, JFrame jFrame, JPanel panel, BotMovies botMovies) {
         botMovies.getTimer().stop();
+        botMovies.setPause(false);
 
         field.allBombs = 0;
         field.quantityOfOpenButtons = 0;
-
         field.numbersOfButtonsAroundEmptyButton.clear();
         field.allNumbersOfBombs.clear();
         field.numbersOfEmptyButtons.clear();
