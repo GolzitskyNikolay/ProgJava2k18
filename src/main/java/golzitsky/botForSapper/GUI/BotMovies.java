@@ -14,15 +14,7 @@ class BotMovies {
     private Cell[] buttons;
     private Field field;
     private int mapSize;
-    private Boolean pause = false;
-    void setPause(Boolean pause) {
-        this.pause = pause;
-    }
-
-    Boolean getPause() {
-        return pause;
-    }
-
+    private Boolean pause = false; //if Timer is going -> false, else -> true.
     private Timer timer = new Timer(150, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -30,10 +22,21 @@ class BotMovies {
         }
     });
 
+    Boolean getPause() {
+        return pause;
+    }
+
+    void setPause(Boolean pause) {
+        this.pause = pause;
+    }
+
     Timer getTimer() {
         return timer;
     }
 
+    /**
+     * It starts Timer.
+     */
     void begin(Field field, int firstOpenButton, GameLogic gameLogic) {
         this.gameLogic = gameLogic;
         numberOfNextOpenButton = firstOpenButton;
@@ -75,9 +78,10 @@ class BotMovies {
                 field.knownNumbersOfBombs.clear();
             }
 
-            botLogic.knowButtonsWithoutBombs(buttons, mapSize, field);
+            botLogic.knowButtonsWithoutBombs(buttons, mapSize, field);             //find cells without bombs
 
-            numberOfNextOpenButton = botLogic.numberOfNextOpenButton(buttons, mapSize, field);
+            numberOfNextOpenButton = botLogic.numberOfNextOpenButton(buttons, mapSize, field);  //choose next
+                                                                                                // cell to open it
         }
     }
 }

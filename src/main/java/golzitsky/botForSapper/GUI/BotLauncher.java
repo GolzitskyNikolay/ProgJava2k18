@@ -26,10 +26,10 @@ public class BotLauncher {
     }
 
     static void startGame(Field field, JFrame jFrame, JPanel panel, BotMovies botMovies) {
-        botMovies.getTimer().stop();
+        botMovies.getTimer().stop(); //reset Timer
         botMovies.setPause(false);
 
-        field.allBombs = 0;
+        field.numberOfBombs = 0;     //clear field
         field.quantityOfOpenButtons = 0;
         field.numbersOfButtonsAroundEmptyButton.clear();
         field.allNumbersOfBombs.clear();
@@ -49,15 +49,15 @@ public class BotLauncher {
         jFrame.setBounds(540 - 3 * mapSize, 360 - 20 * mapSize, mapSize * 50, mapSize * 50 + 25);
         panel.setLayout(new GridLayout(mapSize, mapSize));
 
-        field.buttons = new RedrawCell[mapSize * mapSize];
+        field.buttons = new RedrawCell[mapSize * mapSize];  //length of field
         panel.removeAll();
 
         GameLogic gameLogic = new GameLogic();
 
-        GenerateField generateField = new GenerateField();
+        GenerateField generateField = new GenerateField();  //create field
         generateField.createEmptyField(panel, field, gameLogic);
         jFrame.setVisible(true);
 
-        botMovies.begin(field, generateField.getNumberOfOpenButton(), gameLogic);
+        botMovies.begin(field, generateField.getNumberOfOpenButton(), gameLogic); //start Timer
     }
 }

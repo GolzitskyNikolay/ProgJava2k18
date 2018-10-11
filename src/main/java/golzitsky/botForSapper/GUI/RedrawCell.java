@@ -12,6 +12,9 @@ import java.util.*;
 class RedrawCell extends Cell {
     private BotLogic botLogic = new BotLogic();
 
+    /**
+     * If Bot opened cell with bomb, then this method show all bombs in field.
+     */
     private void showAllBombs(Field field, int i) {
         field.buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\bombed.png"));
         field.allNumbersOfBombs.remove(i);
@@ -24,6 +27,10 @@ class RedrawCell extends Cell {
         }
     }
 
+    /**
+     * Change picture of cell, when Bot open this cell. If cell is empty, then call method
+     * "openOrCountNotOpenedCellsOrFlagsAroundCell()" in BotLogic.
+     */
     void openButton(Cell[] buttons, Field field, int i, int mapSize,
                     Queue<Integer> buttonsAroundEmptyButton, GameLogic gameLogic) {
         if (!buttons[i].isOpen()) {
@@ -55,6 +62,9 @@ class RedrawCell extends Cell {
         }
     }
 
+    /**
+     * When Bot found cell without bombs, it makes flag for this cell.
+     */
     void makeFlag(Cell[] buttons, int i, Field field) {
         if (!buttons[i].isHasFlag()) {
             field.knownNumbersOfFlags.add(i);

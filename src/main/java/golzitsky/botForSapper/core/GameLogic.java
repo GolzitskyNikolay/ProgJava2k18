@@ -7,7 +7,7 @@ public class GameLogic {
     }
 
     public Boolean isWin(Field field) {
-        return field.quantityOfOpenButtons + field.allBombs == field.mapSize * field.mapSize;
+        return field.quantityOfOpenButtons + field.numberOfBombs == field.mapSize * field.mapSize;
     }
 
     public int countBombsAroundCell(Cell[] fieldButtons, int i, int mapSize) {

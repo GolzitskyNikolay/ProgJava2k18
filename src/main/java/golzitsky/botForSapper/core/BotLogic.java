@@ -53,12 +53,18 @@ public class BotLogic {
         else if (!countNumbersOfFlags) buttonsAroundCell.add(i);
     }
 
+    /**
+     * It find indexes of not open cells around cell.
+     */
     public Queue<Integer> notOpenedCellsAroundCell(int i, Cell[] buttons, int mapSize) {
         Queue<Integer> numbersOfButtons = new LinkedList<>();
         openOrCountNotOpenedCellsOrFlagsAroundCell(buttons, i, mapSize, numbersOfButtons, true, false);
         return numbersOfButtons;
     }
 
+    /**
+     * It find all indexes of flags around cell.
+     */
     public Queue<Integer> numbersOfFlagsAroundCell(int i, Cell[] buttons, int mapSize) {
         Queue<Integer> numbersOfFlags = new LinkedList<>();
         openOrCountNotOpenedCellsOrFlagsAroundCell(buttons, i, mapSize, numbersOfFlags, false, true);
@@ -67,6 +73,8 @@ public class BotLogic {
 
     /**
      * This method find cells without bombs around opened cells with count of bombs = 1, then = 2 etc.
+     * If number of bombs around cell = number of not open cells around this cell - number of flags
+     * around this cell, then it remember these cells with bombs.
      */
     public void knowButtonsWithoutBombs(Cell[] buttons, int mapSize, Field field) {
         Queue<Integer> numbersOfDigits = new LinkedList<>(field.numbersOfOpenCellsWithDigit);
@@ -90,14 +98,14 @@ public class BotLogic {
     }
 
     /**
-     * This method choose a number of next open button.
-     * It check buttons without bomb around cells with count of bombs = 1, then with count of bombs = 2 etc.
+     * This method choose a number of next open cell.
+     * It check cells without bomb around cells with count of bombs = 1, then with count of bombs = 2 etc.
      * If it haven't this cells it use method "cellWithMinChanceOfBomb", that find cell with
      * the smallest count of bombs.
      * It has repeating code in method "forNumberOfNextOpenButton".
      */
     public int numberOfNextOpenButton(Cell[] buttons, int mapSize, Field field) {
-        int number = 0;
+        int number;
         if (!field.buttonsWithoutBombsAround1.isEmpty()) {
             number = forNumberOfNextOpenButton(field.buttonsWithoutBombsAround1);
         } else if (!field.buttonsWithoutBombsAround2.isEmpty()) {
@@ -116,6 +124,10 @@ public class BotLogic {
         return number;
     }
 
+    /**
+     * If Bot knows cells without bomb, it choose one of these cells and
+     * give it to "numberOfNextOpenButton()".
+     */
     private int forNumberOfNextOpenButton(Set<Integer> set) {
         Queue<Integer> queue = new LinkedList<>(set);
         int number = queue.poll();
@@ -124,14 +136,14 @@ public class BotLogic {
     }
 
     /**
-     * This method find cell with the smallest count of bombs from opened cells.
+     * This method find cell from opened cells with the smallest number of bombs around it,
+     * that then open cell with minimum chance of bomb around it.
      */
     private int cellWithMinChanceOfBomb(Field field, Cell[] buttons, int mapSize) {
         int number = 0;
         Queue<Integer> queue;
-        Set<Integer> set = field.numbersOfOpenCellsWithDigit;
         int minCountOfBombs = 8;
-        for (int e : set) {
+        for (int e : field.numbersOfOpenCellsWithDigit) {
             queue = notOpenedCellsAroundCell(e, buttons, mapSize);
             queue.removeAll(numbersOfFlagsAroundCell(e, buttons, mapSize));
             if (buttons[e].countOfBombs <= minCountOfBombs && queue.size() != 0) {
@@ -142,6 +154,9 @@ public class BotLogic {
         return number;
     }
 
+    /**
+     * Bot uses this method after creating of empty field.
+     */
     public int numberOfRandomOpenButton(int mapSize) {
         Random random = new Random();
         return random.nextInt(mapSize * mapSize);

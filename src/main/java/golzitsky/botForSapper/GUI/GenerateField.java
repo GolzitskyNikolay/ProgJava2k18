@@ -20,6 +20,9 @@ class GenerateField extends Field {
         return numberOfOpenButton;
     }
 
+    /**
+     * Create array of Cells.
+     */
     void createEmptyField(JPanel panel, Field ourField, GameLogic gameLogic) {
         field = ourField;
         buttons = field.buttons;
@@ -34,6 +37,10 @@ class GenerateField extends Field {
         generateFieldByFirstOpenButton();
     }
 
+    /**
+     * Start generate field, open random cell, this cell hasn't bomb. Then each cell become or empty,
+     * or with bomb, or with digit, that shows number of bombs around this cell.
+     */
     private void generateFieldByFirstOpenButton() {
         numberOfOpenButton = botLogic.numberOfRandomOpenButton(mapSize);
         buttons[numberOfOpenButton].firstButtonHasntBomb();
@@ -41,7 +48,7 @@ class GenerateField extends Field {
             if (j != numberOfOpenButton) {
                 buttons[j].chanceOfBomb(field, buttons[j]);
                 if (buttons[j].isHasBomb()) {
-                    field.allBombs++;
+                    field.numberOfBombs++;
                     field.allNumbersOfBombs.add(j);
                 }
             }

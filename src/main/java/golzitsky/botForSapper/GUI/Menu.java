@@ -22,7 +22,7 @@ class Menu {
 
         JMenu settings = new JMenu("Settings");
         addSizeOfMap(settings, classField, jFrame, panel, botMovies);
-        addDifficult(settings, classField, jFrame, panel, botMovies);
+        addDifficulty(settings, classField, jFrame, panel, botMovies);
         addSound(settings);
 
         JMenu stopOrStartTimer = new JMenu("Pause");
@@ -65,10 +65,10 @@ class Menu {
         game.add(newGame);
     }
 
-    private static void addDifficult(JMenu settings, Field classField, JFrame jFrame,
-                                     JPanel panel, BotMovies botMovies) {
+    private static void addDifficulty(JMenu settings, Field classField, JFrame jFrame,
+                                      JPanel panel, BotMovies botMovies) {
         ImageIcon flag2 = new ImageIcon("src\\main\\resources\\images\\settings.png");
-        JMenuItem difficult = new JMenuItem("Difficult", flag2);
+        JMenuItem difficult = new JMenuItem("Difficulty", flag2);
         difficult.setToolTipText("You can choose number of chanceOfBombs");
         difficult.addActionListener(new ActionListener() {
             @Override
@@ -103,8 +103,8 @@ class Menu {
             slider = new JSlider(5, 16, classField.mapSize);
             slider.setMajorTickSpacing(1);
         } else {
-            slider = new JSlider(5, 26, classField.chanceOfBombs);
-            slider.setMajorTickSpacing(3);
+            slider = new JSlider(5, 15, classField.chanceOfBombs);
+            slider.setMajorTickSpacing(2);
         }
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);

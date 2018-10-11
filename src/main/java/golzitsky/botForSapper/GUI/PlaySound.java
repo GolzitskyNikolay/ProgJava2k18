@@ -5,10 +5,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
-public class PlaySound {
+class PlaySound {
 
-    boolean playSound = true;
+    boolean playSound = true; //if during the game we choose "Sound turn on" -> true, else -> false.
 
+    /**
+     * Play sound after win or losing.
+     */
     static void playSound(String string) {
         PlaySound playSoundObject = new PlaySound();
         if (playSoundObject.playSound) {
