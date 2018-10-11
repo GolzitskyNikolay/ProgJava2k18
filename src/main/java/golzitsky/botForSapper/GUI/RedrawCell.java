@@ -69,7 +69,6 @@ class RedrawCell extends Cell {
         if (!buttons[i].isHasFlag()) {
             field.knownNumbersOfFlags.add(i);
             buttons[i].setIcon(new ImageIcon("src\\main\\resources\\images\\flaged.png"));
-            buttons[i].setPressedIcon(null);
             buttons[i].setFlag(true);
         }
     }
