@@ -100,7 +100,7 @@ class Menu {
         JPanel jPanel = new JPanel();
         JSlider slider;
         if (!isDifficult) {
-            slider = new JSlider(5, 16, classField.mapSize);
+            slider = new JSlider(5, 15, classField.mapSize);
             slider.setMajorTickSpacing(1);
         } else {
             slider = new JSlider(5, 19, classField.chanceOfBombs);
