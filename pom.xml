@@ -38,7 +38,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>golzitsky.task2.CutLauncher</mainClass>
+                            <mainClass>golzitsky.Cut.CutLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
