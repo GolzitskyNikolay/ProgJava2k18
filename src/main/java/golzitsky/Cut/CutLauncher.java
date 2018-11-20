@@ -1,4 +1,4 @@
-package golzitsky.task2;
+package golzitsky.Cut;
 
 import java.io.*;
 import java.util.ArrayList;

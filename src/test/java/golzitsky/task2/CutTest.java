@@ -1,5 +1,6 @@
 package golzitsky.task2;
 
+import golzitsky.Cut.Cut;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import com.google.common.collect.Range;

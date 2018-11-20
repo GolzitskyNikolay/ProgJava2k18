@@ -1,4 +1,4 @@
-package golzitsky.task2;
+package golzitsky.Cut;
 
 import com.google.common.collect.Range;
 import com.google.common.primitives.Chars;
