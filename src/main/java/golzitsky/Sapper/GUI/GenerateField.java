@@ -1,15 +1,14 @@
-package golzitsky.task3.GUI;
+package golzitsky.Sapper.GUI;
 
-import golzitsky.task3.core.Cell;
-import golzitsky.task3.core.Field;
-import golzitsky.task3.core.GameLogic;
+import golzitsky.Sapper.core.Cell;
+import golzitsky.Sapper.core.Field;
+import golzitsky.Sapper.core.GameLogic;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import static golzitsky.task3.GUI.PlaySound.playSound;
-import static golzitsky.task3.GUI.SapperLauncher.endGame;
+import static golzitsky.Sapper.GUI.SapperLauncher.endGame;
 
 public class GenerateField extends Field {
     private GameLogic gameLogic = new GameLogic();
@@ -63,7 +62,7 @@ public class GenerateField extends Field {
                     button.changeButton(button, classField, jFrame, panel);
                 }
                 if (gameLogic.isWin(classField)) {
-                    playSound("src\\main\\resources\\sounds\\win.wav");
+                    PlaySound.playSound("src\\main\\resources\\sounds\\win.wav");
                     endGame("You Win!!!", classField, jFrame, panel);
                 }
             }

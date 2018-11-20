@@ -1,13 +1,13 @@
-package golzitsky.task3.GUI;
+package golzitsky.Sapper.GUI;
 
-import golzitsky.task3.core.Cell;
-import golzitsky.task3.core.Field;
-import golzitsky.task3.core.GameLogic;
+import golzitsky.Sapper.core.Field;
+import golzitsky.Sapper.core.Cell;
+import golzitsky.Sapper.core.GameLogic;
 
 import javax.swing.*;
 
-import static golzitsky.task3.GUI.PlaySound.playSound;
-import static golzitsky.task3.GUI.SapperLauncher.endGame;
+import static golzitsky.Sapper.GUI.PlaySound.playSound;
+import static golzitsky.Sapper.GUI.SapperLauncher.endGame;
 
 public class RedrawCell extends Cell {
     private GameLogic gameLogic = new GameLogic();
@@ -47,4 +47,5 @@ public class RedrawCell extends Cell {
             hasFlag = false;
         }
     }
+
 }

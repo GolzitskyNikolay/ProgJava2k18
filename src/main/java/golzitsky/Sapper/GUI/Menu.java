@@ -1,6 +1,6 @@
-package golzitsky.task3.GUI;
+package golzitsky.Sapper.GUI;
 
-import golzitsky.task3.core.Field;
+import golzitsky.Sapper.core.Field;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,8 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
-import static golzitsky.task3.GUI.SapperLauncher.*;
 
 public class Menu {
 
@@ -39,7 +37,7 @@ public class Menu {
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startGame(classField, jFrame, panel);
+                SapperLauncher.startGame(classField, jFrame, panel);
             }
         });
         game.add(newGame);
@@ -98,7 +96,7 @@ public class Menu {
                                     "Do you want to start a new game?");
                     if (result == JOptionPane.YES_OPTION) {
                         classField.mapSize = slider.getValue();
-                        startGame(classField, jFrame, panel);
+                        SapperLauncher.startGame(classField, jFrame, panel);
                     }
                 }
                 jDialog.dispose();

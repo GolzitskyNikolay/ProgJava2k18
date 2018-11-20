@@ -1,4 +1,4 @@
-package golzitsky.task3.core;
+package golzitsky.Sapper.core;
 
 public class GameLogic {
 

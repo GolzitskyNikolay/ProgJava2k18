@@ -1,6 +1,6 @@
-package golzitsky.task3.GUI;
+package golzitsky.Sapper.GUI;
 
-import golzitsky.task3.core.Field;
+import golzitsky.Sapper.core.Field;
 
 import javax.swing.*;
 
@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import static golzitsky.task3.GUI.Menu.createMenu;
+import static golzitsky.Sapper.GUI.Menu.createMenu;
 
 public class SapperLauncher {
 

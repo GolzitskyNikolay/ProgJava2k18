@@ -1,6 +1,6 @@
-package golzitsky.task3.core;
+package golzitsky.Sapper.core;
 
-import golzitsky.task3.GUI.RedrawCell;
+import golzitsky.Sapper.GUI.RedrawCell;
 
 import java.util.*;
 

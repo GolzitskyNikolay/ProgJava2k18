@@ -1,7 +1,8 @@
 package golzitsky.task3.GUI;
 
-import golzitsky.task3.core.Field;
-import golzitsky.task3.core.GameLogic;
+import golzitsky.Sapper.GUI.RedrawCell;
+import golzitsky.Sapper.core.Field;
+import golzitsky.Sapper.core.GameLogic;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;

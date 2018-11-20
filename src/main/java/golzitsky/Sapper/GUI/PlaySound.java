@@ -1,4 +1,4 @@
-package golzitsky.task3.GUI;
+package golzitsky.Sapper.GUI;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -9,7 +9,7 @@ public class PlaySound {
 
     boolean playSound = true;
 
-    static void playSound(String string) {
+    public static void playSound(String string) {
         PlaySound playSoundObject = new PlaySound();
         if (playSoundObject.playSound) {
             try {
